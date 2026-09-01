@@ -1,90 +1,374 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#f7f8fb" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>家庭血压记录</title>
-  <link rel="stylesheet" href="styles.css" />
+  <style>
+    *{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#f4f6f8;color:#17202a}button,input,select,textarea{font:inherit}.hidden{display:none!important}
+    .login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:linear-gradient(145deg,#f7f9fb,#e8edf3)}
+    .login-card{width:100%;max-width:420px;background:#fff;padding:32px;border-radius:20px;box-shadow:0 24px 70px rgba(22,32,42,.12)}
+    .eyebrow{margin:0 0 6px;color:#7b8794;font-size:11px;font-weight:700;letter-spacing:1.5px}.login-card h1{margin:0 0 8px;font-size:28px}.sub{margin:0 0 26px;color:#6e7884;font-size:14px;line-height:1.5}
+    label{display:block;font-size:13px;font-weight:650;margin:15px 0 7px}input,select,textarea{width:100%;border:1px solid #dbe0e6;border-radius:10px;padding:12px;background:#fbfcfd;color:#17202a;outline:none}input:focus,select:focus,textarea:focus{border-color:#537fc7;box-shadow:0 0 0 3px #eaf1fc}
+    .btn{border:0;border-radius:10px;padding:12px 16px;font-weight:650;cursor:pointer}.btn:disabled{opacity:.55;cursor:wait}.primary{background:#17202a;color:#fff}.secondary{background:#e9edf2;color:#17202a}.danger{background:#fff0f0;color:#b03838}.full{width:100%;margin-top:12px}.message{min-height:20px;margin:14px 0 0;font-size:13px;color:#b03838;line-height:1.45}.message.ok{color:#24714b}.allowed{margin:18px 0 0;text-align:center;font-size:11px;color:#8b949e}
+    .app-header{height:76px;padding:0 max(20px,calc((100vw - 1050px)/2));display:flex;align-items:center;justify-content:space-between;background:#fff;border-bottom:1px solid #e3e7eb}.app-header h1{font-size:21px;margin:0}.header-right{display:flex;align-items:center;gap:10px}.user{font-size:12px;color:#68727d}
+    main{max-width:1050px;margin:auto;padding:24px 18px 60px}.status{padding:12px 14px;border-radius:10px;background:#eaf6ef;color:#246b46;font-size:13px;margin-bottom:16px}.panel{background:#fff;border:1px solid #e3e7eb;border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 12px 35px rgba(31,41,55,.05)}.panel h2{font-size:18px;margin:0 0 16px}.form-grid{display:grid;grid-template-columns:1fr repeat(3,1fr);gap:12px}.form-grid .wide{grid-column:span 2}.actions{display:flex;justify-content:flex-end;margin-top:16px}
+    table{width:100%;border-collapse:collapse;font-size:13px}th{text-align:left;color:#76808b;font-weight:600;border-bottom:1px solid #e3e7eb;padding:11px 8px}td{border-bottom:1px solid #eef0f2;padding:12px 8px}.empty{text-align:center;color:#7f8994;padding:32px}.delete-btn{border:0;background:#fff0f0;color:#a73636;border-radius:8px;padding:7px 10px;cursor:pointer}
+    .dashboard-tools{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:16px}.segmented{display:flex;gap:3px;padding:4px;background:#e8ecf1;border-radius:11px}.segmented button{border:0;background:transparent;padding:9px 14px;border-radius:8px;color:#66717d;cursor:pointer}.segmented button.active{background:#fff;color:#17202a;box-shadow:0 2px 8px rgba(0,0,0,.08)}.person-filter .yihao-tab.active{background:#e8f1ff;color:#2868c6}.person-filter .wenqi-tab.active{background:#fdebf2;color:#b84f78}.date-tools{display:flex;flex-direction:column;align-items:flex-end;gap:8px}.custom-dates{display:flex;align-items:center;gap:7px}.custom-dates input{width:140px;padding:8px}
+    .metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}.metric-card{background:#fff;border:1px solid #e3e7eb;border-radius:14px;padding:16px}.metric-label{font-size:12px;color:#78828d}.metric-value{font-size:26px;font-weight:750;margin:7px 0 2px}.metric-unit{font-size:11px;color:#89929c}.panel-title,.calendar-head,.modal-head{display:flex;align-items:center;justify-content:space-between}.panel-title h2,.calendar-head h2,.modal-head h2{margin:0}.chart-legend{display:flex;gap:14px;font-size:12px;color:#707a85}.chart-legend span:before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}.legend-sys:before{background:#3a78d4}.legend-dia:before{background:#e17a9e}.trend-chart{height:280px}.trend-chart svg{width:100%;height:100%}.chart-empty{height:100%;display:flex;align-items:center;justify-content:center;color:#7e8893;font-size:13px}.grid-line{stroke:#edf0f3;stroke-width:1}.axis-text{fill:#8a949e;font-size:10px}.line{fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}.line.yihao.sys{stroke:#3276d2}.line.yihao.dia{stroke:#75a6eb}.line.wenqi.sys{stroke:#d85f8d}.line.wenqi.dia{stroke:#ef9fbb}.chart-dot{stroke:#fff;stroke-width:2}
+    .calendar-head{text-align:center;margin-bottom:12px}.month-btn,.modal-close{border:0;background:#eef1f4;width:38px;height:38px;border-radius:10px;font-size:22px;cursor:pointer}.weekdays,.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr)}.weekdays span{text-align:center;color:#8b949e;font-size:11px;padding:8px}.calendar-grid{border-top:1px solid #e5e8ec;border-left:1px solid #e5e8ec}.cal-day{min-height:100px;padding:7px;border-right:1px solid #e5e8ec;border-bottom:1px solid #e5e8ec;cursor:pointer;background:#fff}.cal-day.outside{background:#fafbfc;color:#b1b8c0}.cal-day:hover{background:#f7f9fb}.day-num{font-size:12px;margin-bottom:5px}.day-pill{font-size:10px;padding:5px 6px;border-radius:7px;margin-top:4px}.day-pill.yihao{background:#e8f1ff;color:#2868c6}.day-pill.wenqi{background:#fdebf2;color:#b84f78}.day-pill strong{font-size:11px}.modal{position:fixed;inset:0;z-index:20;background:rgba(18,25,34,.55);display:flex;align-items:center;justify-content:center;padding:18px}.modal-card{background:#fff;width:min(94vw,610px);border-radius:18px;padding:22px;box-shadow:0 30px 90px rgba(0,0,0,.25)}.modal-head{margin-bottom:18px}.modal .actions{gap:9px}.day-detail{padding:11px;border-bottom:1px solid #edf0f2;display:grid;grid-template-columns:72px 1fr auto;gap:10px}.day-detail strong.yihao{color:#2868c6}.day-detail strong.wenqi{color:#b84f78}.day-detail small{color:#7b8590}
+    .chart-legend{align-items:center}.legend-yihao:before{background:#3276d2!important}.legend-wenqi:before{background:#d85f8d!important}.chart-legend small{font-size:10px;color:#9098a2}.history-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.history-head h2{margin:0}.history-filters{display:grid;grid-template-columns:repeat(4,1fr) auto;gap:12px;align-items:end}.history-filters label{margin-top:0}.edit-btn{border:0;background:#eef2f6;border-radius:8px;width:34px;height:34px;cursor:pointer;font-size:16px}.action-spacer{flex:1}.medical-note{font-size:12px;line-height:1.55;color:#68737f;background:#f4f7fa;padding:11px;border-radius:9px}.profile-person{border:1px solid #e2e7ec;border-radius:12px;padding:13px;margin-top:12px}.profile-person h3{margin:0 0 9px}.profile-person.yihao h3{color:#2868c6}.profile-person.wenqi h3{color:#b84f78}.profile-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.profile-grid label{font-size:11px}.bmi{font-size:11px;color:#7b8590}.reference-band{opacity:.14}.reference-label{font-size:9px;fill:#69737e}
+    @media(max-width:700px){.login-card{padding:24px}.app-header{padding:0 8px}.app-header h1{display:none}.app-header .btn{padding:9px 7px;font-size:11px}.user{display:none}main{padding:14px 10px 40px}.panel{padding:14px}.dashboard-tools{flex-direction:column}.date-tools{align-items:flex-start;width:100%}.custom-dates{flex-wrap:wrap}.custom-dates input{width:125px}.metric-grid{grid-template-columns:1fr 1fr;gap:8px}.form-grid{grid-template-columns:1fr 1fr}.form-grid .wide{grid-column:span 2}.table-wrap{overflow-x:auto}table{min-width:720px}.trend-chart{height:230px}.cal-day{min-height:78px;padding:4px}.day-pill{padding:3px;font-size:8px}.day-pill strong{font-size:9px}.modal-card{padding:17px}.chart-legend small{display:none}.history-filters{grid-template-columns:1fr 1fr}.profile-grid{grid-template-columns:1fr 1fr}}
+  </style>
 </head>
 <body>
-  <header class="topbar">
-    <div>
-      <p class="eyebrow">FAMILY HEALTH</p>
-      <h1>血压记录</h1>
+  <section id="loginPage" class="login-page">
+    <div class="login-card">
+      <p class="eyebrow">SHU & WANG · FAMILY HEALTH</p>
+      <h1>家庭血压记录</h1>
+      <p class="sub">请先使用授权邮箱注册或登录。登录成功后才能进入 Dashboard。</p>
+      <form id="loginForm">
+        <label for="email">邮箱</label>
+        <input id="email" type="email" autocomplete="email" required>
+        <label for="password">密码</label>
+        <input id="password" type="password" minlength="6" autocomplete="current-password" required>
+        <button id="loginBtn" class="btn primary full" type="submit">登录</button>
+        <button id="registerBtn" class="btn secondary full" type="button">首次使用：注册</button>
+        <p id="loginMessage" class="message"></p>
+        <p class="allowed">仅限已加入家庭白名单的两个邮箱</p>
+      </form>
     </div>
-    <div class="top-actions">
-      <span id="syncState" class="sync-state">本地演示</span>
-      <button id="openSettings" class="icon-btn" aria-label="同步设置">⚙</button>
-      <button id="openEntry" class="primary-btn">＋ 新记录</button>
+  </section>
+
+  <section id="dashboard" class="hidden">
+    <header class="app-header">
+      <div><p class="eyebrow">FAMILY HEALTH</p><h1>血压 Dashboard</h1></div>
+      <div class="header-right"><span id="currentUser" class="user"></span><button id="addRecordBtn" class="btn primary">＋ 新增数据</button><button id="historyBtn" class="btn secondary">历史记录</button><button id="profileBtn" class="btn secondary">个人设置</button><button id="logoutBtn" class="btn secondary">退出</button></div>
+    </header>
+    <main id="dashboardMain">
+      <div id="syncStatus" class="status">正在读取云端数据……</div>
+      <section class="dashboard-tools">
+        <div id="personFilter" class="segmented person-filter">
+          <button class="active" data-person="all">两个人</button>
+          <button class="yihao-tab" data-person="Yihao">Yihao</button>
+          <button class="wenqi-tab" data-person="Wenqi">Wenqi</button>
+        </div>
+        <div class="date-tools">
+          <div id="rangeFilter" class="segmented"><button class="active" data-days="7">7天</button><button data-days="30">1个月</button><button data-days="custom">自定义</button></div>
+          <div id="customDates" class="custom-dates hidden"><input id="startDate" type="date"><span>至</span><input id="endDate" type="date"><button id="applyDates" class="btn secondary" type="button">应用</button></div>
+        </div>
+      </section>
+      <section id="metricCards" class="metric-grid"></section>
+      <section class="panel">
+        <div class="panel-title"><div><p class="eyebrow">TREND</p><h2>血压趋势</h2></div><div class="chart-legend"><span class="legend-yihao">Yihao 蓝色</span><span class="legend-wenqi">Wenqi 粉色</span><small>大点=高压 · 小点=低压</small></div></div>
+        <div id="trendChart" class="trend-chart"></div>
+      </section>
+      <section class="panel">
+        <div class="calendar-head"><button id="prevMonth" class="month-btn" type="button">‹</button><div><p class="eyebrow">CALENDAR</p><h2 id="monthTitle"></h2></div><button id="nextMonth" class="month-btn" type="button">›</button></div>
+        <div class="weekdays"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>
+        <div id="calendarGrid" class="calendar-grid"></div>
+      </section>
+    </main>
+    <main id="historyMain" class="hidden">
+      <div class="history-head"><div><p class="eyebrow">HISTORY</p><h2>历史记录</h2></div><button id="backDashboard" class="btn secondary">返回 Dashboard</button></div>
+      <section class="panel history-filters">
+        <div><label for="historyPerson">测量人</label><select id="historyPerson"><option value="all">两个人</option><option value="Yihao">Yihao</option><option value="Wenqi">Wenqi</option></select></div>
+        <div><label for="historyStart">起始时间</label><input id="historyStart" type="datetime-local"></div>
+        <div><label for="historyEnd">结束时间</label><input id="historyEnd" type="datetime-local"></div>
+        <div><label for="historySort">排序</label><select id="historySort"><option value="time_desc">时间：最新优先</option><option value="time_asc">时间：最早优先</option><option value="sys_desc">高压峰值</option><option value="dia_desc">低压峰值</option><option value="pulse_desc">心率峰值</option></select></div>
+        <button id="applyHistory" class="btn primary" type="button">筛选</button>
+      </section>
+      <section class="panel">
+        <div class="table-wrap"><table><thead><tr><th>时间</th><th>测量人</th><th>高压</th><th>低压</th><th>心率</th><th>备注</th><th></th></tr></thead><tbody id="recordsBody"></tbody></table></div>
+        <div id="emptyState" class="empty hidden">当前条件下没有记录。</div>
+      </section>
+    </main>
+  </section>
+
+  <div id="recordModal" class="modal hidden">
+    <div class="modal-card">
+      <div class="modal-head"><div><p class="eyebrow">MEASUREMENT</p><h2 id="recordModalTitle">新增血压记录</h2></div><button id="closeModal" class="modal-close" type="button">×</button></div>
+      <form id="recordForm">
+        <input id="editingId" type="hidden">
+        <div class="form-grid">
+          <div><label for="person">测量人</label><select id="person"><option value="Yihao">Yihao</option><option value="Wenqi">Wenqi</option></select></div>
+          <div><label for="systolic">高压</label><input id="systolic" type="number" min="50" max="260" required placeholder="mmHg"></div>
+          <div><label for="diastolic">低压</label><input id="diastolic" type="number" min="30" max="160" required placeholder="mmHg"></div>
+          <div><label for="pulse">心率（可选）</label><input id="pulse" type="number" min="25" max="240" placeholder="bpm"></div>
+          <div class="wide"><label for="measuredAt">测量时间</label><input id="measuredAt" type="datetime-local" required></div>
+          <div class="wide"><label for="note">备注</label><input id="note" type="text" placeholder="例如：服药后、运动后"></div>
+        </div>
+        <div class="actions"><button id="deleteEditBtn" class="btn danger hidden" type="button">删除</button><span class="action-spacer"></span><button id="cancelRecord" class="btn secondary" type="button">取消</button><button id="saveBtn" class="btn primary" type="submit">保存记录</button></div>
+      </form>
     </div>
-  </header>
+  </div>
 
-  <main>
-    <section class="toolbar" aria-label="筛选器">
-      <div class="segmented" id="personFilter">
-        <button data-person="all" class="active">两人</button>
-        <button data-person="Yihao">Yihao</button>
-        <button data-person="Wenqi">Wenqi</button>
-      </div>
-      <div class="segmented" id="rangeFilter">
-        <button data-range="7" class="active">7 天</button>
-        <button data-range="30">1 个月</button>
-      </div>
-    </section>
+  <div id="dayModal" class="modal hidden">
+    <div class="modal-card"><div class="modal-head"><div><p class="eyebrow">DAILY DETAIL</p><h2 id="dayModalTitle"></h2></div><button id="closeDayModal" class="modal-close" type="button">×</button></div><div id="dayModalContent"></div></div>
+  </div>
 
-    <section id="summaryCards" class="summary-grid"></section>
+  <div id="profileModal" class="modal hidden">
+    <div class="modal-card profile-card"><div class="modal-head"><div><p class="eyebrow">PERSONAL SETTINGS</p><h2>个人资料与目标区间</h2></div><button id="closeProfile" class="modal-close" type="button">×</button></div>
+      <p class="medical-note">身高体重仅用于计算 BMI，不用于推算血压。默认参考区来自成人家庭自测标准；如医生给出个人目标，请在这里覆盖。</p>
+      <form id="profileForm"><div id="profileFields"></div><div class="actions"><button class="btn primary" type="submit">保存设置</button></div></form>
+    </div>
+  </div>
 
-    <section class="panel trend-panel">
-      <div class="panel-head">
-        <div><p class="eyebrow">TREND</p><h2>血压趋势</h2></div>
-        <div class="legend"><span class="sys">收缩压</span><span class="dia">舒张压</span><span class="pulse">心率</span></div>
-      </div>
-      <div id="trendChart" class="chart" role="img" aria-label="血压及心率趋势图"></div>
-    </section>
 
-    <section class="panel calendar-panel">
-      <div class="panel-head">
-        <button id="prevMonth" class="icon-btn" aria-label="上个月">‹</button>
-        <div class="calendar-title"><p class="eyebrow">CALENDAR</p><h2 id="monthTitle"></h2></div>
-        <button id="nextMonth" class="icon-btn" aria-label="下个月">›</button>
-      </div>
-      <div class="weekdays"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>
-      <div id="calendar" class="calendar"></div>
-    </section>
-  </main>
+  <script>
+  (function(){
+    "use strict";
+    var SUPABASE_URL="https://pqkeezmeirukobeewpub.supabase.co";
+    var PUBLIC_KEY="sb_publishable_AAHBL7j4kyQGnYP_eK0OyA_QMe31hXE";
+    var ALLOWED=["wangnonoqi@gmail.com","shuyihao7788@gmail.com"];
+    var session=null;
+    var member=null;
+    var records=[];
+    var currentPerson="all";
+    var rangeDays=7;
+    var customStart="";
+    var customEnd="";
+    var calendarMonth=new Date(new Date().getFullYear(),new Date().getMonth(),1);
+    var profiles=[];
 
-  <dialog id="entryDialog">
-    <form id="entryForm" class="dialog-card">
-      <div class="dialog-head"><div><p class="eyebrow">MEASUREMENT</p><h2 id="entryTitle">新增测量</h2></div><button type="button" class="close-btn">×</button></div>
-      <input type="hidden" id="entryId" />
-      <div class="field"><label for="person">测量人</label><select id="person" required><option>Yihao</option><option>Wenqi</option></select></div>
-      <div class="reading-grid">
-        <div class="field"><label for="systolic">高压 <small>mmHg</small></label><input id="systolic" type="number" min="50" max="260" inputmode="numeric" required /></div>
-        <div class="field"><label for="diastolic">低压 <small>mmHg</small></label><input id="diastolic" type="number" min="30" max="160" inputmode="numeric" required /></div>
-        <div class="field"><label for="pulse">心率 <small>bpm</small></label><input id="pulse" type="number" min="25" max="240" inputmode="numeric" required /></div>
-      </div>
-      <div class="field"><label for="measuredAt">测量时间</label><input id="measuredAt" type="datetime-local" required /></div>
-      <div class="field"><label for="note">备注</label><textarea id="note" rows="3" placeholder="例如：服药后、运动后、头痛……"></textarea></div>
-      <div class="dialog-actions"><button type="button" id="deleteEntry" class="danger-btn hidden">删除</button><span></span><button type="button" class="secondary-btn close-btn">取消</button><button type="submit" class="primary-btn">保存记录</button></div>
-    </form>
-  </dialog>
+    function el(id){return document.getElementById(id)}
+    function pad(n){return String(n).padStart(2,"0")}
+    function localDateTime(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())+"T"+pad(d.getHours())+":"+pad(d.getMinutes())}
+    function message(text,ok){el("loginMessage").textContent=text;el("loginMessage").className=ok?"message ok":"message"}
+    function setBusy(busy){el("loginBtn").disabled=busy;el("registerBtn").disabled=busy}
+    function saveSession(value){session=value;try{if(value)localStorage.setItem("shuwang_session",JSON.stringify(value));else localStorage.removeItem("shuwang_session")}catch(e){}}
+    function readSession(){try{return JSON.parse(localStorage.getItem("shuwang_session")||"null")}catch(e){return null}}
 
-  <dialog id="dayDialog">
-    <div class="dialog-card wide"><div class="dialog-head"><div><p class="eyebrow">DAILY DETAIL</p><h2 id="dayTitle"></h2></div><button class="close-btn">×</button></div><div id="daySummary"></div><div id="dayEntries" class="entry-list"></div></div>
-  </dialog>
+    async function auth(path,data,token){
+      var headers={"apikey":PUBLIC_KEY,"Content-Type":"application/json"};
+      if(token)headers.Authorization="Bearer "+token;
+      var options={method:"POST",headers:headers};
+      if(data)options.body=JSON.stringify(data);
+      var response=await fetch(SUPABASE_URL+"/auth/v1/"+path,options);
+      var result=await response.json().catch(function(){return {}});
+      if(!response.ok)throw new Error(result.msg||result.message||result.error_description||("HTTP "+response.status));
+      return result;
+    }
 
-  <dialog id="settingsDialog">
-    <form id="settingsForm" class="dialog-card">
-      <div class="dialog-head"><div><p class="eyebrow">SYNC</p><h2>家庭同步设置</h2></div><button type="button" class="close-btn">×</button></div>
-      <p class="hint">首次在每台设备输入同一个家庭访问密钥。密钥只保存在当前设备，不会写入 GitHub。</p>
-      <div class="field"><label for="familyKey">家庭访问密钥</label><input id="familyKey" type="password" minlength="12" autocomplete="off" placeholder="至少 12 位" /></div>
-      <div class="dialog-actions"><button type="button" id="useDemo" class="secondary-btn">使用本地模式</button><span></span><button type="button" class="secondary-btn close-btn">取消</button><button type="submit" class="primary-btn">连接同步</button></div>
-    </form>
-  </dialog>
+    async function rest(path,options){
+      options=options||{};
+      options.headers=Object.assign({"apikey":PUBLIC_KEY,"Authorization":"Bearer "+session.access_token,"Content-Type":"application/json"},options.headers||{});
+      var response=await fetch(SUPABASE_URL+"/rest/v1/"+path,options);
+      var result=response.status===204?null:await response.json().catch(function(){return {}});
+      if(!response.ok)throw new Error(result.message||("HTTP "+response.status));
+      return result;
+    }
 
-  <div id="toast" class="toast" aria-live="polite"></div>
-  <script src="config.js"></script>
-  <script src="app.js"></script>
+    function showLogin(){
+      el("dashboard").classList.add("hidden");
+      el("loginPage").classList.remove("hidden");
+    }
+    function showDashboard(){
+      el("loginPage").classList.add("hidden");
+      el("dashboard").classList.remove("hidden");
+      el("historyMain").classList.add("hidden");
+      el("dashboardMain").classList.remove("hidden");
+      el("currentUser").textContent=session.user.email;
+    }
+
+    async function enterDashboard(){
+      var rows=await rest("household_members?select=household_id,display_name&user_id=eq."+encodeURIComponent(session.user.id));
+      if(!rows||!rows.length)throw new Error("这个账户没有家庭数据访问权限");
+      member=rows[0];
+      showDashboard();
+      el("person").value=member.display_name==="Wenqi"?"Wenqi":"Yihao";
+      profiles=await rest("health_profiles?select=*&order=person.asc");
+      await loadRecords();
+    }
+
+    async function loadRecords(){
+      el("syncStatus").textContent="正在读取云端数据……";
+      records=await rest("blood_pressure_entries?select=*&order=measured_at.desc");
+      renderDashboard();
+      el("syncStatus").textContent="云端已同步 · 共 "+records.length+" 条记录";
+    }
+
+    function filteredRecords(){
+      var now=new Date(),start,end=new Date(now);end.setHours(23,59,59,999);
+      if(rangeDays==="custom"){
+        start=customStart?new Date(customStart+"T00:00:00"):new Date(0);
+        end=customEnd?new Date(customEnd+"T23:59:59"):end;
+      }else{start=new Date(now);start.setDate(start.getDate()-Number(rangeDays)+1);start.setHours(0,0,0,0)}
+      return records.filter(function(row){var d=new Date(row.measured_at);return (currentPerson==="all"||row.person===currentPerson)&&d>=start&&d<=end});
+    }
+
+    function average(rows,key){if(!rows.length)return null;return Math.round(rows.reduce(function(sum,row){return sum+Number(row[key])},0)/rows.length)}
+    function renderDashboard(){var rows=filteredRecords();renderMetrics(rows);renderChart(rows);renderCalendar()}
+    function renderMetrics(rows){
+      var cards=[["平均高压",average(rows,"systolic"),"mmHg"],["平均低压",average(rows,"diastolic"),"mmHg"],["平均心率",average(rows,"pulse"),"bpm"],["测量次数",rows.length,"次"]];
+      el("metricCards").innerHTML=cards.map(function(card){return '<div class="metric-card"><div class="metric-label">'+card[0]+'</div><div class="metric-value">'+(card[1]===null?"—":card[1])+'</div><div class="metric-unit">'+card[2]+'</div></div>'}).join("");
+    }
+
+    function renderTable(rows){
+      var body=el("recordsBody");
+      body.innerHTML="";
+      el("emptyState").classList.toggle("hidden",rows.length!==0);
+      rows.forEach(function(row){
+        var tr=document.createElement("tr");
+        var d=new Date(row.measured_at);
+        var values=[d.toLocaleString("zh-CN"),row.person,row.systolic+" mmHg",row.diastolic+" mmHg",row.pulse===null?"—":row.pulse+" bpm",row.note||""];
+        values.forEach(function(value){var td=document.createElement("td");td.textContent=value;tr.appendChild(td)});
+        var action=document.createElement("td");
+        var button=document.createElement("button");
+        button.type="button";button.className="edit-btn";button.textContent="✎";button.title="编辑";
+        button.addEventListener("click",function(){openEditModal(row.id)});
+        action.appendChild(button);tr.appendChild(action);body.appendChild(tr);
+      });
+    }
+
+    function renderChart(rows){
+      var chart=el("trendChart");
+      var sorted=rows.slice().sort(function(a,b){return new Date(a.measured_at)-new Date(b.measured_at)});
+      var W=920,H=260,L=42,R=18,T=18,B=30,min=40,max=190;
+      var x=function(i){return L+i*(W-L-R)/Math.max(sorted.length-1,1)};
+      var y=function(v){return T+(max-v)*(H-T-B)/(max-min)};
+      var grid=[60,90,120,150,180].map(function(v){return '<line class="grid-line" x1="'+L+'" y1="'+y(v)+'" x2="'+(W-R)+'" y2="'+y(v)+'"></line><text class="axis-text" x="2" y="'+(y(v)+3)+'">'+v+'</text>'}).join("");
+      var labels=sorted.map(function(row,i){if(sorted.length>12&&i%Math.ceil(sorted.length/8)!==0)return "";var d=new Date(row.measured_at);return '<text class="axis-text" text-anchor="middle" x="'+x(i)+'" y="'+(H-5)+'">'+(d.getMonth()+1)+'/'+d.getDate()+'</text>'}).join("");
+      var series=[];
+      ["Yihao","Wenqi"].forEach(function(person){["systolic","diastolic"].forEach(function(key){var path="",count=0;sorted.forEach(function(row,i){if(row.person!==person)return;path+=(count?"L":"M")+x(i).toFixed(1)+","+y(row[key]).toFixed(1)+" ";count++});if(count)series.push('<path class="line '+person.toLowerCase()+' '+(key==="systolic"?"sys":"dia")+'" d="'+path+'"></path>')})});
+      var bandPeople=currentPerson==="all"?["Yihao","Wenqi"]:[currentPerson],bands="";
+      bandPeople.forEach(function(person,idx){var p=profiles.find(function(v){return v.person===person});if(!p)return;var color=person==="Yihao"?"#3276d2":"#d85f8d";var sysTop=y(p.systolic_max),sysHeight=y(p.systolic_min)-sysTop;var diaTop=y(p.diastolic_max),diaHeight=y(p.diastolic_min)-diaTop;bands+='<rect class="reference-band" x="'+L+'" y="'+sysTop+'" width="'+(W-L-R)+'" height="'+sysHeight+'" fill="'+color+'"></rect><rect class="reference-band" x="'+L+'" y="'+diaTop+'" width="'+(W-L-R)+'" height="'+diaHeight+'" fill="'+color+'"></rect><text class="reference-label" x="'+(L+5)+'" y="'+(sysTop+10+idx*10)+'">'+person+' 目标区</text>'});
+      var dots=sorted.map(function(row,i){var color=row.person==="Yihao"?"#3276d2":"#d85f8d";return '<circle class="chart-dot" cx="'+x(i)+'" cy="'+y(row.systolic)+'" r="4" fill="'+color+'"><title>'+row.person+' '+row.systolic+'/'+row.diastolic+'</title></circle><circle class="chart-dot" cx="'+x(i)+'" cy="'+y(row.diastolic)+'" r="3" fill="'+color+'"></circle>'}).join("");
+      chart.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none">'+grid+bands+labels+series.join("")+dots+'</svg>';
+    }
+
+    function renderCalendar(){
+      var y0=calendarMonth.getFullYear(),m0=calendarMonth.getMonth();
+      el("monthTitle").textContent=y0+" 年 "+(m0+1)+" 月";
+      var first=(new Date(y0,m0,1).getDay()+6)%7,days=new Date(y0,m0+1,0).getDate(),prev=new Date(y0,m0,0).getDate(),html="";
+      for(var i=0;i<42;i++){
+        var d,inside=true;if(i<first){d=new Date(y0,m0-1,prev-first+i+1);inside=false}else if(i>=first+days){d=new Date(y0,m0+1,i-first-days+1);inside=false}else d=new Date(y0,m0,i-first+1);
+        var key=d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+        var dayRows=records.filter(function(row){var rd=new Date(row.measured_at);var same=rd.getFullYear()===d.getFullYear()&&rd.getMonth()===d.getMonth()&&rd.getDate()===d.getDate();return same&&(currentPerson==="all"||row.person===currentPerson)});
+        var pills=["Yihao","Wenqi"].map(function(person){var pr=dayRows.filter(function(r){return r.person===person});return pr.length?'<div class="day-pill '+person.toLowerCase()+'"><strong>'+average(pr,"systolic")+'/'+average(pr,"diastolic")+'</strong> · '+pr.length+'次</div>':""}).join("");
+        html+='<div class="cal-day '+(inside?"":"outside")+'" data-date="'+key+'"><div class="day-num">'+d.getDate()+'</div>'+pills+'</div>';
+      }
+      el("calendarGrid").innerHTML=html;
+    }
+
+    async function deleteRecord(id,confirmed){
+      if(!confirmed&&!confirm("确定删除这条记录吗？"))return;
+      try{await rest("blood_pressure_entries?id=eq."+encodeURIComponent(id),{method:"DELETE",headers:{"Prefer":"return=minimal"}});await loadRecords()}
+      catch(error){alert("删除失败："+error.message)}
+    }
+
+    function openRecordModal(){el("recordForm").reset();el("editingId").value="";el("recordModalTitle").textContent="新增血压记录";el("deleteEditBtn").classList.add("hidden");el("measuredAt").value=localDateTime(new Date());el("person").value=currentPerson==="all"?(member.display_name==="Wenqi"?"Wenqi":"Yihao"):currentPerson;el("recordModal").classList.remove("hidden")}
+    function openEditModal(id){var row=records.find(function(r){return r.id===id});if(!row)return;el("editingId").value=row.id;el("recordModalTitle").textContent="编辑血压记录";el("person").value=row.person;el("systolic").value=row.systolic;el("diastolic").value=row.diastolic;el("pulse").value=row.pulse===null?"":row.pulse;el("measuredAt").value=localDateTime(new Date(row.measured_at));el("note").value=row.note||"";el("deleteEditBtn").classList.remove("hidden");el("dayModal").classList.add("hidden");el("recordModal").classList.remove("hidden")}
+    function closeRecordModal(){el("recordModal").classList.add("hidden")}
+    function showDay(dateKey){
+      var parts=dateKey.split("-"),d=new Date(Number(parts[0]),Number(parts[1])-1,Number(parts[2]));
+      var rows=records.filter(function(row){var rd=new Date(row.measured_at);return rd.getFullYear()===d.getFullYear()&&rd.getMonth()===d.getMonth()&&rd.getDate()===d.getDate()&&(currentPerson==="all"||row.person===currentPerson)}).sort(function(a,b){return new Date(a.measured_at)-new Date(b.measured_at)});
+      if(!rows.length)return;
+      el("dayModalTitle").textContent=(d.getMonth()+1)+"月"+d.getDate()+"日";
+      el("dayModalContent").innerHTML=rows.map(function(row){var time=new Date(row.measured_at).toLocaleTimeString("zh-CN",{hour:"2-digit",minute:"2-digit"});return '<div class="day-detail"><span>'+time+'</span><div><strong class="'+row.person.toLowerCase()+'">'+row.person+' · '+row.systolic+'/'+row.diastolic+'</strong><br><small>心率 '+(row.pulse===null?"未记录":row.pulse+" bpm")+(row.note?" · "+row.note:"")+'</small></div><button class="edit-btn day-edit" data-id="'+row.id+'" title="编辑">✎</button></div>'}).join("");
+      el("dayModal").classList.remove("hidden");
+    }
+    function renderHistory(){
+      var person=el("historyPerson").value,start=el("historyStart").value,end=el("historyEnd").value,sort=el("historySort").value;
+      var rows=records.filter(function(row){var time=new Date(row.measured_at);return (person==="all"||row.person===person)&&(!start||time>=new Date(start))&&(!end||time<=new Date(end))});
+      rows.sort(function(a,b){if(sort==="time_asc")return new Date(a.measured_at)-new Date(b.measured_at);if(sort==="sys_desc")return b.systolic-a.systolic;if(sort==="dia_desc")return b.diastolic-a.diastolic;if(sort==="pulse_desc")return (b.pulse||-1)-(a.pulse||-1);return new Date(b.measured_at)-new Date(a.measured_at)});
+      renderTable(rows);
+    }
+    function bmiText(p){if(!p.height_cm||!p.weight_kg)return "BMI：未填写";var bmi=Number(p.weight_kg)/Math.pow(Number(p.height_cm)/100,2);return "BMI："+bmi.toFixed(1)}
+    function renderProfileForm(){
+      el("profileFields").innerHTML=["Yihao","Wenqi"].map(function(person){var p=profiles.find(function(v){return v.person===person})||{};var k=person.toLowerCase();return '<section class="profile-person '+k+'"><h3>'+person+'</h3><div class="profile-grid"><div><label>身高 cm</label><input id="'+k+'Height" type="number" step="0.1" value="'+(p.height_cm||"")+'"></div><div><label>体重 kg</label><input id="'+k+'Weight" type="number" step="0.1" value="'+(p.weight_kg||"")+'"></div><div class="bmi">'+bmiText(p)+'</div><div><label>高压下限</label><input id="'+k+'SysMin" type="number" value="'+(p.systolic_min||90)+'"></div><div><label>高压上限</label><input id="'+k+'SysMax" type="number" value="'+(p.systolic_max||134)+'"></div><div><label>低压下限</label><input id="'+k+'DiaMin" type="number" value="'+(p.diastolic_min||60)+'"></div><div><label>低压上限</label><input id="'+k+'DiaMax" type="number" value="'+(p.diastolic_max||84)+'"></div></div></section>'}).join("");
+    }
+    async function saveProfiles(){
+      var payload=["Yihao","Wenqi"].map(function(person){var k=person.toLowerCase();return {household_id:member.household_id,person:person,height_cm:el(k+"Height").value?Number(el(k+"Height").value):null,weight_kg:el(k+"Weight").value?Number(el(k+"Weight").value):null,systolic_min:Number(el(k+"SysMin").value),systolic_max:Number(el(k+"SysMax").value),diastolic_min:Number(el(k+"DiaMin").value),diastolic_max:Number(el(k+"DiaMax").value),updated_at:new Date().toISOString()}});
+      payload.forEach(function(p){if(p.systolic_min>=p.systolic_max||p.diastolic_min>=p.diastolic_max)throw new Error(p.person+" 的下限必须小于上限")});
+      await rest("health_profiles?on_conflict=household_id,person",{method:"POST",headers:{"Prefer":"resolution=merge-duplicates,return=representation"},body:JSON.stringify(payload)});
+      profiles=await rest("health_profiles?select=*&order=person.asc");renderDashboard();
+    }
+
+    el("addRecordBtn").addEventListener("click",openRecordModal);
+    el("historyBtn").addEventListener("click",function(){el("dashboardMain").classList.add("hidden");el("historyMain").classList.remove("hidden");renderHistory()});
+    el("backDashboard").addEventListener("click",function(){el("historyMain").classList.add("hidden");el("dashboardMain").classList.remove("hidden")});
+    el("applyHistory").addEventListener("click",renderHistory);
+    el("profileBtn").addEventListener("click",function(){renderProfileForm();el("profileModal").classList.remove("hidden")});
+    el("closeProfile").addEventListener("click",function(){el("profileModal").classList.add("hidden")});
+    el("profileForm").addEventListener("submit",async function(e){e.preventDefault();try{await saveProfiles();el("profileModal").classList.add("hidden");alert("个人设置已保存")}catch(error){alert("保存失败："+error.message)}});
+    el("closeModal").addEventListener("click",closeRecordModal);
+    el("cancelRecord").addEventListener("click",closeRecordModal);
+    el("closeDayModal").addEventListener("click",function(){el("dayModal").classList.add("hidden")});
+    el("recordModal").addEventListener("click",function(e){if(e.target===el("recordModal"))closeRecordModal()});
+    el("dayModal").addEventListener("click",function(e){if(e.target===el("dayModal"))el("dayModal").classList.add("hidden")});
+    el("dayModalContent").addEventListener("click",function(e){var button=e.target.closest(".day-edit");if(button)openEditModal(button.getAttribute("data-id"))});
+    el("personFilter").addEventListener("click",function(e){var button=e.target.closest("button");if(!button)return;currentPerson=button.getAttribute("data-person");el("personFilter").querySelectorAll("button").forEach(function(b){b.classList.toggle("active",b===button)});renderDashboard()});
+    el("rangeFilter").addEventListener("click",function(e){var button=e.target.closest("button");if(!button)return;var value=button.getAttribute("data-days");rangeDays=value==="custom"?"custom":Number(value);el("rangeFilter").querySelectorAll("button").forEach(function(b){b.classList.toggle("active",b===button)});el("customDates").classList.toggle("hidden",value!=="custom");if(value!=="custom")renderDashboard()});
+    el("applyDates").addEventListener("click",function(){customStart=el("startDate").value;customEnd=el("endDate").value;if(!customStart||!customEnd){alert("请选择起始日期和结束日期");return}if(customStart>customEnd){alert("起始日期不能晚于结束日期");return}renderDashboard()});
+    el("prevMonth").addEventListener("click",function(){calendarMonth=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth()-1,1);renderCalendar()});
+    el("nextMonth").addEventListener("click",function(){calendarMonth=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth()+1,1);renderCalendar()});
+    el("calendarGrid").addEventListener("click",function(e){var day=e.target.closest(".cal-day");if(day)showDay(day.getAttribute("data-date"))});
+    el("deleteEditBtn").addEventListener("click",async function(){var id=el("editingId").value;if(!id||!confirm("确定删除这条血压记录吗？删除后无法恢复。"))return;await deleteRecord(id,true);closeRecordModal();renderHistory()});
+
+    el("loginForm").addEventListener("submit",async function(event){
+      event.preventDefault();setBusy(true);message("正在登录……",true);
+      try{
+        var email=el("email").value.trim().toLowerCase();
+        var password=el("password").value;
+        var data=await auth("token?grant_type=password",{email:email,password:password});
+        saveSession(data);await enterDashboard();message("",true);
+      }catch(error){saveSession(null);showLogin();message("登录失败："+error.message,false)}
+      setBusy(false);
+    });
+
+    el("registerBtn").addEventListener("click",async function(){
+      var email=el("email").value.trim().toLowerCase();
+      var password=el("password").value;
+      if(ALLOWED.indexOf(email)===-1){message("这个邮箱不在家庭白名单中。",false);return}
+      if(password.length<6){message("密码至少需要 6 位。",false);return}
+      setBusy(true);message("正在注册……",true);
+      try{
+        var data=await auth("signup",{email:email,password:password});
+        if(data.access_token){saveSession(data);await enterDashboard()}
+        else message("注册成功。请先在邮箱中完成确认，然后回来登录。",true);
+      }catch(error){message("注册失败："+error.message,false)}
+      setBusy(false);
+    });
+
+    el("recordForm").addEventListener("submit",async function(event){
+      event.preventDefault();el("saveBtn").disabled=true;el("syncStatus").textContent="正在保存……";
+      try{
+        var payload={
+          household_id:member.household_id,
+          recorded_by:session.user.id,
+          person:el("person").value,
+          systolic:Number(el("systolic").value),
+          diastolic:Number(el("diastolic").value),
+          pulse:el("pulse").value?Number(el("pulse").value):null,
+          measured_at:new Date(el("measuredAt").value).toISOString(),
+          note:el("note").value.trim()
+        };
+        var editingId=el("editingId").value;
+        if(editingId)await rest("blood_pressure_entries?id=eq."+encodeURIComponent(editingId),{method:"PATCH",headers:{"Prefer":"return=minimal"},body:JSON.stringify(payload)});
+        else await rest("blood_pressure_entries",{method:"POST",headers:{"Prefer":"return=minimal"},body:JSON.stringify(payload)});
+        el("systolic").value="";el("diastolic").value="";el("pulse").value="";el("note").value="";
+        el("measuredAt").value=localDateTime(new Date());
+        closeRecordModal();
+        await loadRecords();
+        if(!el("historyMain").classList.contains("hidden"))renderHistory();
+      }catch(error){el("syncStatus").textContent="保存失败："+error.message}
+      el("saveBtn").disabled=false;
+    });
+
+    el("logoutBtn").addEventListener("click",async function(){
+      try{if(session)await auth("logout",null,session.access_token)}catch(e){}
+      saveSession(null);session=null;member=null;showLogin();message("已退出登录。",true);
+    });
+
+    async function start(){
+      el("measuredAt").value=localDateTime(new Date());
+      session=readSession();
+      if(!session){showLogin();return}
+      try{await enterDashboard()}catch(error){saveSession(null);session=null;showLogin();message("请重新登录："+error.message,false)}
+    }
+    start();
+  })();
+  </script>
 </body>
 </html>
