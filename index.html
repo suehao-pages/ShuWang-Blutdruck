@@ -1,165 +1,216 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#f7f8fb" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>家庭血压记录</title>
   <style>
-:root{--bg:#f5f6f8;--panel:#fff;--ink:#17202a;--muted:#747d89;--line:#e7e9ed;--blue:#3976dd;--blue-soft:#eaf1ff;--gold:#ba8331;--rose:#b35e73;--danger:#b84141;--shadow:0 18px 50px rgba(31,41,55,.07);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink)}*{box-sizing:border-box}body{margin:0;background:var(--bg);min-height:100vh}.topbar{height:88px;display:flex;align-items:center;justify-content:space-between;padding:0 max(24px,calc((100vw - 1180px)/2));background:rgba(255,255,255,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}h1,h2,p{margin:0}h1{font-size:25px;letter-spacing:-.6px}h2{font-size:20px;letter-spacing:-.3px}.eyebrow{font-size:10px;letter-spacing:1.7px;color:#8a929c;font-weight:700;margin-bottom:5px}.top-actions,.toolbar,.panel-head,.dialog-head,.dialog-actions{display:flex;align-items:center}.top-actions{gap:10px}.sync-state{font-size:12px;color:var(--muted);padding:7px 10px;border-radius:20px;background:#eef0f3}.sync-state.live{color:#217a4c;background:#e9f7ef}.primary-btn,.secondary-btn,.danger-btn,.icon-btn,.close-btn,.segmented button{font:inherit;border:0;cursor:pointer}.primary-btn{background:var(--ink);color:white;padding:10px 16px;border-radius:10px;font-weight:650}.secondary-btn,.danger-btn{padding:10px 14px;border-radius:10px;background:#eef0f3;color:var(--ink)}.secondary-btn.compact{padding:9px 11px;font-size:12px}.danger-btn{color:var(--danger);background:#fff0f0}.icon-btn,.close-btn{width:38px;height:38px;border-radius:10px;background:#eef0f3;font-size:20px}.close-btn{background:transparent;font-size:25px}main{max-width:1180px;margin:0 auto;padding:26px 24px 60px}.toolbar{justify-content:space-between;margin-bottom:18px}.segmented{display:flex;background:#e9ebef;padding:3px;border-radius:10px}.segmented button{background:transparent;color:#68717d;padding:8px 14px;border-radius:8px}.segmented button.active{background:white;color:var(--ink);box-shadow:0 2px 8px rgba(0,0,0,.06)}.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px}.metric{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}.metric .label{font-size:12px;color:var(--muted)}.metric .value{font-size:30px;font-weight:700;letter-spacing:-1.2px;margin:8px 0 3px}.metric .unit{font-size:12px;color:var(--muted)}.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow);margin-bottom:14px}.panel-head{justify-content:space-between;margin-bottom:18px}.legend{display:flex;gap:14px;font-size:12px;color:var(--muted)}.legend span:before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}.legend .sys:before{background:var(--blue)}.legend .dia:before{background:var(--gold)}.legend .pulse:before{background:var(--rose)}.chart{height:270px;overflow:hidden}.chart svg{width:100%;height:100%;overflow:visible}.axis-label{font-size:10px;fill:#9098a2}.gridline{stroke:#edf0f3;stroke-width:1}.line-sys,.line-dia,.line-pulse{fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}.line-sys{stroke:var(--blue)}.line-dia{stroke:var(--gold)}.line-pulse{stroke:var(--rose);stroke-dasharray:4 5}.dot{stroke:white;stroke-width:2}.empty{height:100%;display:grid;place-items:center;color:var(--muted);font-size:13px}.calendar-title{text-align:center}.weekdays,.calendar{display:grid;grid-template-columns:repeat(7,1fr)}.weekdays span{text-align:center;font-size:11px;color:#929aa3;padding:9px}.calendar{border-top:1px solid var(--line);border-left:1px solid var(--line)}.day{min-height:112px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:8px;background:white;cursor:pointer;transition:.15s}.day:hover{background:#fafbfc}.day.outside{background:#fafafa;color:#b5bac1}.day.today .day-num{background:var(--ink);color:white}.day-num{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;font-size:12px;margin-bottom:5px}.avg{padding:6px;border-radius:8px;margin-top:4px;font-size:11px;background:var(--blue-soft);color:#315f9e}.avg.wenqi{background:#f8edf0;color:#8f4e60}.avg strong{font-size:13px}.avg small{display:block;margin-top:2px;opacity:.75}dialog{border:0;padding:0;border-radius:18px;box-shadow:0 30px 90px rgba(0,0,0,.22);width:min(94vw,560px)}dialog::backdrop{background:rgba(25,31,40,.42);backdrop-filter:blur(3px)}.dialog-card{padding:24px}.dialog-card.wide{min-width:560px}.dialog-head{justify-content:space-between;margin-bottom:20px}.field{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}.field label{font-size:12px;font-weight:650}.field small,.hint{font-weight:400;color:var(--muted)}input,select,textarea{width:100%;font:inherit;border:1px solid #dfe2e7;border-radius:10px;background:#fafbfc;padding:11px 12px;color:var(--ink);outline:none}input:focus,select:focus,textarea:focus{border-color:#8caeea;box-shadow:0 0 0 3px #edf3ff}.reading-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.dialog-actions{gap:9px;margin-top:20px}.dialog-actions span{flex:1}.hint{font-size:12px;line-height:1.55;margin-bottom:18px}.backup-box{border:1px solid var(--line);background:#fafbfc;border-radius:12px;padding:13px;margin-top:8px}.backup-box .hint{margin:4px 0 10px}.backup-actions{display:flex;gap:8px;flex-wrap:wrap}.entry-list{display:flex;flex-direction:column;gap:9px;margin-top:16px}.entry-row{border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;grid-template-columns:70px 1fr auto;gap:12px;align-items:center;cursor:pointer}.entry-row .time{font-size:12px;color:var(--muted)}.entry-row .reading{font-size:16px;font-weight:700}.entry-row .meta{font-size:11px;color:var(--muted);margin-top:4px}.entry-row .person{font-size:11px;padding:5px 8px;border-radius:10px;background:var(--blue-soft)}.daily-summary{display:flex;gap:8px;flex-wrap:wrap}.daily-summary span{background:#f1f3f5;padding:8px 10px;border-radius:9px;font-size:12px}.hidden{display:none!important}.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;background:#1e2935;color:white;padding:11px 16px;border-radius:10px;font-size:13px;z-index:10;transition:.2s;pointer-events:none}.toast.show{opacity:1;transform:translate(-50%,0)}
-@media(max-width:720px){.topbar{height:76px;padding:0 16px}.top-actions{gap:6px}.sync-state{display:none}.primary-btn{padding:9px 11px}main{padding:16px 12px 50px}.toolbar{gap:10px}.segmented button{padding:7px 10px;font-size:12px}.summary-grid{grid-template-columns:repeat(2,1fr);gap:9px}.metric{padding:14px}.metric .value{font-size:25px}.panel{padding:14px;border-radius:14px}.trend-panel .panel-head{align-items:flex-start;gap:10px}.legend{gap:7px;flex-wrap:wrap;justify-content:flex-end}.chart{height:235px}.day{min-height:82px;padding:4px}.day-num{margin-bottom:2px}.avg{padding:4px;font-size:9px}.avg strong{font-size:11px}.avg small{display:none}.dialog-card{padding:18px}.dialog-card.wide{min-width:0}.reading-grid{gap:6px}.reading-grid input{padding:11px 7px}.entry-row{grid-template-columns:55px 1fr auto}}
-.auth-dialog{width:min(92vw,430px)}.auth-dialog::backdrop{background:rgba(18,24,32,.72);backdrop-filter:blur(8px)}.auth-brand{text-align:center;margin:8px 0 24px}.auth-brand h2{font-size:25px;margin-bottom:9px}.auth-brand .hint{margin:0}.auth-main{width:100%;margin-top:8px}.auth-message{font-size:12px;min-height:18px;color:var(--danger);margin:4px 0}.auth-message.ok{color:#217a4c}.auth-note{text-align:center;font-size:10px;color:var(--muted);margin-top:15px}
-
-</style>
+    *{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#f4f6f8;color:#17202a}button,input,select,textarea{font:inherit}.hidden{display:none!important}
+    .login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:linear-gradient(145deg,#f7f9fb,#e8edf3)}
+    .login-card{width:100%;max-width:420px;background:#fff;padding:32px;border-radius:20px;box-shadow:0 24px 70px rgba(22,32,42,.12)}
+    .eyebrow{margin:0 0 6px;color:#7b8794;font-size:11px;font-weight:700;letter-spacing:1.5px}.login-card h1{margin:0 0 8px;font-size:28px}.sub{margin:0 0 26px;color:#6e7884;font-size:14px;line-height:1.5}
+    label{display:block;font-size:13px;font-weight:650;margin:15px 0 7px}input,select,textarea{width:100%;border:1px solid #dbe0e6;border-radius:10px;padding:12px;background:#fbfcfd;color:#17202a;outline:none}input:focus,select:focus,textarea:focus{border-color:#537fc7;box-shadow:0 0 0 3px #eaf1fc}
+    .btn{border:0;border-radius:10px;padding:12px 16px;font-weight:650;cursor:pointer}.btn:disabled{opacity:.55;cursor:wait}.primary{background:#17202a;color:#fff}.secondary{background:#e9edf2;color:#17202a}.danger{background:#fff0f0;color:#b03838}.full{width:100%;margin-top:12px}.message{min-height:20px;margin:14px 0 0;font-size:13px;color:#b03838;line-height:1.45}.message.ok{color:#24714b}.allowed{margin:18px 0 0;text-align:center;font-size:11px;color:#8b949e}
+    .app-header{height:76px;padding:0 max(20px,calc((100vw - 1050px)/2));display:flex;align-items:center;justify-content:space-between;background:#fff;border-bottom:1px solid #e3e7eb}.app-header h1{font-size:21px;margin:0}.header-right{display:flex;align-items:center;gap:10px}.user{font-size:12px;color:#68727d}
+    main{max-width:1050px;margin:auto;padding:24px 18px 60px}.status{padding:12px 14px;border-radius:10px;background:#eaf6ef;color:#246b46;font-size:13px;margin-bottom:16px}.panel{background:#fff;border:1px solid #e3e7eb;border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 12px 35px rgba(31,41,55,.05)}.panel h2{font-size:18px;margin:0 0 16px}.form-grid{display:grid;grid-template-columns:1fr repeat(3,1fr);gap:12px}.form-grid .wide{grid-column:span 2}.actions{display:flex;justify-content:flex-end;margin-top:16px}
+    table{width:100%;border-collapse:collapse;font-size:13px}th{text-align:left;color:#76808b;font-weight:600;border-bottom:1px solid #e3e7eb;padding:11px 8px}td{border-bottom:1px solid #eef0f2;padding:12px 8px}.empty{text-align:center;color:#7f8994;padding:32px}.delete-btn{border:0;background:#fff0f0;color:#a73636;border-radius:8px;padding:7px 10px;cursor:pointer}
+    @media(max-width:700px){.login-card{padding:24px}.app-header{padding:0 14px}.user{display:none}main{padding:14px 10px 40px}.panel{padding:14px}.form-grid{grid-template-columns:1fr 1fr}.form-grid .wide{grid-column:span 2}.table-wrap{overflow-x:auto}table{min-width:720px}}
+  </style>
 </head>
 <body>
-  <header class="topbar">
-    <div>
-      <p class="eyebrow">FAMILY HEALTH</p>
-      <h1>血压记录</h1>
+  <section id="loginPage" class="login-page">
+    <div class="login-card">
+      <p class="eyebrow">SHU & WANG · FAMILY HEALTH</p>
+      <h1>家庭血压记录</h1>
+      <p class="sub">请先使用授权邮箱注册或登录。登录成功后才能进入 Dashboard。</p>
+      <form id="loginForm">
+        <label for="email">邮箱</label>
+        <input id="email" type="email" autocomplete="email" required>
+        <label for="password">密码</label>
+        <input id="password" type="password" minlength="6" autocomplete="current-password" required>
+        <button id="loginBtn" class="btn primary full" type="submit">登录</button>
+        <button id="registerBtn" class="btn secondary full" type="button">首次使用：注册</button>
+        <p id="loginMessage" class="message"></p>
+        <p class="allowed">仅限已加入家庭白名单的两个邮箱</p>
+      </form>
     </div>
-    <div class="top-actions">
-      <span id="syncState" class="sync-state">未登录</span>
-      <button id="exportCsv" class="secondary-btn compact">导出 CSV</button>
-      <button id="openSettings" class="icon-btn" aria-label="数据备份">⚙</button>
-      <button id="logoutButton" class="secondary-btn compact hidden">退出</button>
-      <button id="openEntry" class="primary-btn">＋ 新记录</button>
-    </div>
-  </header>
+  </section>
 
-  <main>
-    <section class="toolbar" aria-label="筛选器">
-      <div class="segmented" id="personFilter">
-        <button data-person="all" class="active">两人</button>
-        <button data-person="Yihao">Yihao</button>
-        <button data-person="Wenqi">Wenqi</button>
-      </div>
-      <div class="segmented" id="rangeFilter">
-        <button data-range="7" class="active">7 天</button>
-        <button data-range="30">1 个月</button>
-      </div>
-    </section>
+  <section id="dashboard" class="hidden">
+    <header class="app-header">
+      <div><p class="eyebrow">FAMILY HEALTH</p><h1>血压 Dashboard</h1></div>
+      <div class="header-right"><span id="currentUser" class="user"></span><button id="logoutBtn" class="btn secondary">退出</button></div>
+    </header>
+    <main>
+      <div id="syncStatus" class="status">正在读取云端数据……</div>
+      <section class="panel">
+        <h2>新增血压记录</h2>
+        <form id="recordForm">
+          <div class="form-grid">
+            <div><label for="person">测量人</label><select id="person"><option value="Yihao">Yihao</option><option value="Wenqi">Wenqi</option></select></div>
+            <div><label for="systolic">高压</label><input id="systolic" type="number" min="50" max="260" required placeholder="mmHg"></div>
+            <div><label for="diastolic">低压</label><input id="diastolic" type="number" min="30" max="160" required placeholder="mmHg"></div>
+            <div><label for="pulse">心率</label><input id="pulse" type="number" min="25" max="240" required placeholder="bpm"></div>
+            <div class="wide"><label for="measuredAt">测量时间</label><input id="measuredAt" type="datetime-local" required></div>
+            <div class="wide"><label for="note">备注</label><input id="note" type="text" placeholder="例如：服药后、运动后"></div>
+          </div>
+          <div class="actions"><button id="saveBtn" class="btn primary" type="submit">保存记录</button></div>
+        </form>
+      </section>
+      <section class="panel">
+        <h2>全部记录</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>时间</th><th>测量人</th><th>高压</th><th>低压</th><th>心率</th><th>备注</th><th></th></tr></thead>
+            <tbody id="recordsBody"></tbody>
+          </table>
+        </div>
+        <div id="emptyState" class="empty hidden">还没有记录，请先在上方新增一条。</div>
+      </section>
+    </main>
+  </section>
 
-    <section id="summaryCards" class="summary-grid"></section>
-
-    <section class="panel trend-panel">
-      <div class="panel-head">
-        <div><p class="eyebrow">TREND</p><h2>血压趋势</h2></div>
-        <div class="legend"><span class="sys">收缩压</span><span class="dia">舒张压</span><span class="pulse">心率</span></div>
-      </div>
-      <div id="trendChart" class="chart" role="img" aria-label="血压及心率趋势图"></div>
-    </section>
-
-    <section class="panel calendar-panel">
-      <div class="panel-head">
-        <button id="prevMonth" class="icon-btn" aria-label="上个月">‹</button>
-        <div class="calendar-title"><p class="eyebrow">CALENDAR</p><h2 id="monthTitle"></h2></div>
-        <button id="nextMonth" class="icon-btn" aria-label="下个月">›</button>
-      </div>
-      <div class="weekdays"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>
-      <div id="calendar" class="calendar"></div>
-    </section>
-  </main>
-
-  <dialog id="entryDialog">
-    <form id="entryForm" class="dialog-card">
-      <div class="dialog-head"><div><p class="eyebrow">MEASUREMENT</p><h2 id="entryTitle">新增测量</h2></div><button type="button" class="close-btn">×</button></div>
-      <input type="hidden" id="entryId" />
-      <div class="field"><label for="person">测量人</label><select id="person" required><option>Yihao</option><option>Wenqi</option></select></div>
-      <div class="reading-grid">
-        <div class="field"><label for="systolic">高压 <small>mmHg</small></label><input id="systolic" type="number" min="50" max="260" inputmode="numeric" required /></div>
-        <div class="field"><label for="diastolic">低压 <small>mmHg</small></label><input id="diastolic" type="number" min="30" max="160" inputmode="numeric" required /></div>
-        <div class="field"><label for="pulse">心率 <small>bpm</small></label><input id="pulse" type="number" min="25" max="240" inputmode="numeric" required /></div>
-      </div>
-      <div class="field"><label for="measuredAt">测量时间</label><input id="measuredAt" type="datetime-local" required /></div>
-      <div class="field"><label for="note">备注</label><textarea id="note" rows="3" placeholder="例如：服药后、运动后、头痛……"></textarea></div>
-      <div class="dialog-actions"><button type="button" id="deleteEntry" class="danger-btn hidden">删除</button><span></span><button type="button" class="secondary-btn close-btn">取消</button><button type="submit" class="primary-btn">保存记录</button></div>
-    </form>
-  </dialog>
-
-  <dialog id="dayDialog">
-    <div class="dialog-card wide"><div class="dialog-head"><div><p class="eyebrow">DAILY DETAIL</p><h2 id="dayTitle"></h2></div><button class="close-btn">×</button></div><div id="daySummary"></div><div id="dayEntries" class="entry-list"></div></div>
-  </dialog>
-
-  <dialog id="settingsDialog">
-    <div class="dialog-card">
-      <div class="dialog-head"><div><p class="eyebrow">DATA</p><h2>数据备份与恢复</h2></div><button type="button" class="close-btn">×</button></div>
-      <div class="backup-box">
-        <div><strong>家庭数据备份</strong><p class="hint">JSON 用于完整恢复到云端，CSV 用于 Excel 或就医查看。</p></div>
-        <div class="backup-actions"><button type="button" id="exportJson" class="secondary-btn">备份 JSON</button><button type="button" id="importJson" class="secondary-btn">导入 JSON</button><input id="importFile" type="file" accept="application/json,.json" hidden /></div>
-      </div>
-    </div>
-  </dialog>
-
-  <dialog id="authDialog" class="auth-dialog">
-    <form id="authForm" class="dialog-card">
-      <div class="auth-brand"><p class="eyebrow">SHU & WANG · FAMILY HEALTH</p><h2>家庭血压记录</h2><p class="hint">使用已授权的家庭邮箱登录。数据受到账号验证和数据库权限保护。</p></div>
-      <div class="field"><label for="authEmail">邮箱</label><input id="authEmail" type="email" autocomplete="email" required placeholder="name@example.com" /></div>
-      <div class="field"><label for="authPassword">密码</label><input id="authPassword" type="password" minlength="6" autocomplete="current-password" required placeholder="至少 6 位" /></div>
-      <p id="authMessage" class="auth-message"></p>
-      <button type="submit" class="primary-btn auth-main">登录</button>
-      <button type="button" id="registerButton" class="secondary-btn auth-main">首次使用：注册账户</button>
-      <p class="auth-note">仅限已经加入家庭白名单的邮箱</p>
-    </form>
-  </dialog>
-
-  <div id="toast" class="toast" aria-live="polite"></div>
   <script>
-window.APP_CONFIG = {
-  SUPABASE_URL: "https://pqkeezmeirukobeewpub.supabase.co",
-  SUPABASE_PUBLISHABLE_KEY: "sb_publishable_AAHBL7j4kyQGnYP_eK0OyA_QMe31hXE"
-};
+  (function(){
+    "use strict";
+    var SUPABASE_URL="https://pqkeezmeirukobeewpub.supabase.co";
+    var PUBLIC_KEY="sb_publishable_AAHBL7j4kyQGnYP_eK0OyA_QMe31hXE";
+    var ALLOWED=["wangnonoqi@gmail.com","shuyihao7788@gmail.com"];
+    var session=null;
+    var member=null;
 
-</script>
-  <script>
-const cfg=window.APP_CONFIG||{};
-const memoryStore={};
-const storage={get(key){try{return window.localStorage.getItem(key)}catch(_){return memoryStore[key]??null}},set(key,value){try{window.localStorage.setItem(key,value)}catch(_){memoryStore[key]=String(value)}},remove(key){try{window.localStorage.removeItem(key)}catch(_){delete memoryStore[key]}}};
-const state={entries:[],person:'all',range:7,month:new Date(new Date().getFullYear(),new Date().getMonth(),1),session:JSON.parse(storage.get('bp_auth_session')||'null'),member:null};
-const $=s=>document.querySelector(s),$=s=>[...document.querySelectorAll(s)];
-const pad=n=>String(n).padStart(2,'0');
-const localDT=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-const dateKey=v=>{const d=new Date(v);return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`};
-const avg=(arr,k)=>arr.length?Math.round(arr.reduce((s,x)=>s+Number(x[k]),0)/arr.length):null;
-const uid=()=>globalThis.crypto?.randomUUID?.()||`${Date.now()}-${Math.random().toString(16).slice(2)}`;
-const openDialog=el=>typeof el.showModal==='function'?el.showModal():el.setAttribute('open','');
-const closeDialog=el=>typeof el.close==='function'?el.close():el.removeAttribute('open');
-function toast(msg){const el=$('#toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2200)}
-function downloadFile(name,content,type){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),500)}
-function exportJson(){const payload={type:'family-blood-pressure-backup',version:1,exported_at:new Date().toISOString(),entries:state.entries};downloadFile(`血压数据备份-${dateKey(new Date())}.json`,JSON.stringify(payload,null,2),'application/json;charset=utf-8');toast('JSON 备份已导出')}
-function csvCell(v){return `"${String(v??'').replaceAll('"','""')}"`}
-function exportCsv(){const head=['测量人','日期','时间','高压(mmHg)','低压(mmHg)','心率(bpm)','备注'];const rows=[...state.entries].sort((a,b)=>new Date(a.measured_at)-new Date(b.measured_at)).map(x=>{const d=new Date(x.measured_at);return [x.person,dateKey(d),d.toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}),x.systolic,x.diastolic,x.pulse,x.note].map(csvCell).join(',')});downloadFile(`血压记录-${dateKey(new Date())}.csv`,'\ufeff'+[head.map(csvCell).join(','),...rows].join('\r\n'),'text/csv;charset=utf-8');toast('CSV 已导出')}
-async function importJsonFile(file){try{const parsed=JSON.parse(await file.text());const rows=Array.isArray(parsed)?parsed:parsed.entries;if(!Array.isArray(rows))throw new Error('文件格式不正确');const valid=rows.filter(x=>x&&['Yihao','Wenqi'].includes(x.person)&&Number.isFinite(Number(x.systolic))&&Number.isFinite(Number(x.diastolic))&&Number.isFinite(Number(x.pulse))&&!Number.isNaN(new Date(x.measured_at).getTime())).map(x=>({id:x.id||uid(),household_id:state.member.household_id,recorded_by:state.session.user.id,person:x.person,systolic:Number(x.systolic),diastolic:Number(x.diastolic),pulse:Number(x.pulse),measured_at:new Date(x.measured_at).toISOString(),note:String(x.note||'')}));if(!valid.length)throw new Error('没有找到有效记录');if(!confirm(`将导入 ${valid.length} 条记录到家庭云端数据库，是否继续？`))return;await api('blood_pressure_entries?on_conflict=id',{method:'POST',body:JSON.stringify(valid),headers:{Prefer:'resolution=merge-duplicates,return=minimal'}});await load();toast(`已导入 ${valid.length} 条记录`)}catch(e){toast(`导入失败：${e.message}`)}}
-async function authRequest(path,body,token=''){const r=await fetch(`${cfg.SUPABASE_URL}/auth/v1/${path}`,{method:'POST',headers:{apikey:cfg.SUPABASE_PUBLISHABLE_KEY,'Content-Type':'application/json',...(token?{Authorization:`Bearer ${token}`}:{})},body:body?JSON.stringify(body):undefined});const data=await r.json().catch(()=>({}));if(!r.ok)throw new Error(data.msg||data.message||data.error_description||`HTTP ${r.status}`);return data}
-function saveSession(session){state.session=session;session?storage.set('bp_auth_session',JSON.stringify(session)):storage.remove('bp_auth_session')}
-async function refreshSession(){if(!state.session?.refresh_token)return false;try{const fresh=await authRequest('token?grant_type=refresh_token',{refresh_token:state.session.refresh_token});saveSession(fresh);return true}catch(_){saveSession(null);return false}}
-async function api(path,options={},retry=true){const headers={apikey:cfg.SUPABASE_PUBLISHABLE_KEY,Authorization:`Bearer ${state.session?.access_token||''}`,'Content-Type':'application/json',...(options.headers||{})};const r=await fetch(`${cfg.SUPABASE_URL}/rest/v1/${path}`,{...options,headers});if(r.status===401&&retry&&await refreshSession())return api(path,options,false);if(!r.ok)throw new Error((await r.json().catch(()=>({}))).message||`HTTP ${r.status}`);return r.status===204?null:r.json()}
-async function load(){if(!state.session?.access_token){showAuth();return}try{const members=await api(`household_members?select=household_id,display_name&user_id=eq.${state.session.user.id}`);if(!members?.length){await logout(false,'此账户不在家庭成员白名单中');return}state.member=members[0];state.entries=await api('blood_pressure_entries?select=*&order=measured_at.desc');setSync(true);render()}catch(e){setSync(false);showAuth(`登录状态已失效：${e.message}`)}}
-function setSync(ok){const el=$('#syncState');el.textContent=ok?`${state.member?.display_name||''} · 已同步`:'未登录';el.classList.toggle('live',ok);$('#logoutButton').classList.toggle('hidden',!ok)}
-function showAuth(message=''){setSync(false);$('#authMessage').textContent=message;$('#authMessage').classList.remove('ok');openDialog($('#authDialog'))}
-async function login(email,password){const session=await authRequest('token?grant_type=password',{email,password});saveSession(session);closeDialog($('#authDialog'));await load()}
-async function register(email,password){const data=await authRequest('signup',{email:email.toLowerCase(),password});if(data.access_token){saveSession(data);closeDialog($('#authDialog'));await load()}else{$('#authMessage').textContent='注册请求已提交。授权家庭成员请打开邮箱确认链接，然后回来登录。';$('#authMessage').classList.add('ok')}}
-async function logout(callServer=true,message=''){if(callServer&&state.session?.access_token){try{await authRequest('logout',null,state.session.access_token)}catch(_){}}saveSession(null);state.member=null;state.entries=[];render();showAuth(message)}
-async function persist(entry,isDelete=false){const payload={...entry,household_id:state.member.household_id,recorded_by:state.session.user.id};if(isDelete)await api(`blood_pressure_entries?id=eq.${entry.id}`,{method:'DELETE',headers:{Prefer:'return=minimal'}});else if(state.entries.some(x=>x.id===entry.id))await api(`blood_pressure_entries?id=eq.${entry.id}`,{method:'PATCH',body:JSON.stringify(payload),headers:{Prefer:'return=representation'}});else await api('blood_pressure_entries',{method:'POST',body:JSON.stringify(payload),headers:{Prefer:'return=representation'}});await load()}
-function filtered(){return state.person==='all'?state.entries:state.entries.filter(x=>x.person===state.person)}
-function render(){renderSummary();renderChart();renderCalendar();setSync(!!state.session&&!!state.member)}
-function renderSummary(){const since=new Date();since.setDate(since.getDate()-state.range+1);since.setHours(0,0,0,0);const rows=filtered().filter(x=>new Date(x.measured_at)>=since);const cards=[['平均高压',avg(rows,'systolic'),'mmHg'],['平均低压',avg(rows,'diastolic'),'mmHg'],['平均心率',avg(rows,'pulse'),'bpm'],['测量次数',rows.length,`${state.range} 天内`]];$('#summaryCards').innerHTML=cards.map(([l,v,u])=>`<article class="metric"><div class="label">${l}</div><div class="value">${v??'—'}</div><div class="unit">${u}</div></article>`).join('')}
-function dailySeries(){const start=new Date();start.setDate(start.getDate()-state.range+1);start.setHours(0,0,0,0);const groups={};filtered().filter(x=>new Date(x.measured_at)>=start).forEach(x=>(groups[dateKey(x.measured_at)]??=[]).push(x));return Array.from({length:state.range},(_,i)=>{const d=new Date(start);d.setDate(start.getDate()+i);const key=dateKey(d),r=groups[key]||[];return {date:key,label:`${d.getMonth()+1}/${d.getDate()}`,systolic:avg(r,'systolic'),diastolic:avg(r,'diastolic'),pulse:avg(r,'pulse')}})}
-function renderChart(){const data=dailySeries(),valid=data.filter(x=>x.systolic!==null),el=$('#trendChart');if(valid.length<2){el.innerHTML='<div class="empty">至少记录两个不同日期后显示趋势</div>';return}const W=900,H=250,p={l:38,r:15,t:15,b:28},min=40,max=180;const x=i=>p.l+i*(W-p.l-p.r)/(data.length-1),y=v=>p.t+(max-v)*(H-p.t-p.b)/(max-min);const path=k=>{let s='',open=false;data.forEach((d,i)=>{if(d[k]==null){open=false;return}s+=`${open?'L':'M'}${x(i).toFixed(1)},${y(d[k]).toFixed(1)} `;open=true});return s};const grids=[60,90,120,150,180].map(v=>`<line class="gridline" x1="${p.l}" y1="${y(v)}" x2="${W-p.r}" y2="${y(v)}"/><text class="axis-label" x="0" y="${y(v)+3}">${v}</text>`).join('');const labels=data.map((d,i)=>i%(state.range===30?5:1)===0?`<text class="axis-label" text-anchor="middle" x="${x(i)}" y="${H-5}">${d.label}</text>`:'').join('');const dots=(k,c)=>data.map((d,i)=>d[k]==null?'':`<circle class="dot" cx="${x(i)}" cy="${y(d[k])}" r="3.5" fill="${c}"><title>${d.date} · ${d[k]}</title></circle>`).join('');el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">${grids}${labels}<path class="line-sys" d="${path('systolic')}"/><path class="line-dia" d="${path('diastolic')}"/><path class="line-pulse" d="${path('pulse')}"/>${dots('systolic','#3976dd')}${dots('diastolic','#ba8331')}${dots('pulse','#b35e73')}</svg>`}
-function renderCalendar(){const y=state.month.getFullYear(),m=state.month.getMonth();$('#monthTitle').textContent=`${y} 年 ${m+1} 月`;const first=(new Date(y,m,1).getDay()+6)%7,days=new Date(y,m+1,0).getDate(),prevDays=new Date(y,m,0).getDate();const groups={};filtered().forEach(x=>(groups[dateKey(x.measured_at)]??=[]).push(x));let html='';for(let i=0;i<42;i++){let d,inside=true;if(i<first){d=new Date(y,m-1,prevDays-first+i+1);inside=false}else if(i>=first+days){d=new Date(y,m+1,i-first-days+1);inside=false}else d=new Date(y,m,i-first+1);const key=dateKey(d),rows=groups[key]||[],today=key===dateKey(new Date());const persons=['Yihao','Wenqi'].map(person=>{const r=rows.filter(x=>x.person===person);return r.length?`<div class="avg ${person==='Wenqi'?'wenqi':''}"><strong>${avg(r,'systolic')}/${avg(r,'diastolic')}</strong><small>${person} · ${r.length}次</small></div>`:''}).join('');html+=`<div class="day ${inside?'':'outside'} ${today?'today':''}" data-date="${key}"><span class="day-num">${d.getDate()}</span>${persons}</div>`}$('#calendar').innerHTML=html}
-function openEntry(entry=null,date=null){$('#entryForm').reset();$('#entryId').value=entry?.id||'';$('#entryTitle').textContent=entry?'编辑测量':'新增测量';$('#person').value=entry?.person||(state.person==='all'?'Yihao':state.person);$('#systolic').value=entry?.systolic||'';$('#diastolic').value=entry?.diastolic||'';$('#pulse').value=entry?.pulse||'';$('#note').value=entry?.note||'';const d=entry?new Date(entry.measured_at):(date?new Date(`${date}T08:00`):new Date());$('#measuredAt').value=localDT(d);$('#deleteEntry').classList.toggle('hidden',!entry);openDialog($('#entryDialog'))}
-function openDay(key){const rows=filtered().filter(x=>dateKey(x.measured_at)===key).sort((a,b)=>new Date(a.measured_at)-new Date(b.measured_at));if(!rows.length){openEntry(null,key);return}$('#dayTitle').textContent=new Intl.DateTimeFormat('zh-CN',{month:'long',day:'numeric',weekday:'long'}).format(new Date(`${key}T12:00`));$('#daySummary').innerHTML=`<div class="daily-summary"><span>平均高压 <b>${avg(rows,'systolic')}</b></span><span>平均低压 <b>${avg(rows,'diastolic')}</b></span><span>平均心率 <b>${avg(rows,'pulse')}</b></span><span>共 <b>${rows.length}</b> 次</span></div>`;$('#dayEntries').innerHTML=rows.map(x=>`<div class="entry-row" data-id="${x.id}"><div class="time">${new Date(x.measured_at).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})}</div><div><div class="reading">${x.systolic} / ${x.diastolic} <small>· ♥ ${x.pulse}</small></div><div class="meta">${x.note||'无备注'}</div></div><span class="person">${x.person}</span></div>`).join('');openDialog($('#dayDialog'))}
-$('.close-btn').forEach(b=>b.addEventListener('click',()=>closeDialog(b.closest('dialog'))));$('#openEntry').onclick=()=>openEntry();$('#openSettings').onclick=()=>openDialog($('#settingsDialog'));
-$('#exportCsv').onclick=exportCsv;$('#exportJson').onclick=exportJson;$('#importJson').onclick=()=>$('#importFile').click();$('#importFile').onchange=e=>{const file=e.target.files?.[0];if(file)importJsonFile(file);e.target.value=''};
-$('#personFilter').onclick=e=>{if(!e.target.dataset.person)return;state.person=e.target.dataset.person;$('#personFilter button').forEach(b=>b.classList.toggle('active',b===e.target));render()};$('#rangeFilter').onclick=e=>{if(!e.target.dataset.range)return;state.range=Number(e.target.dataset.range);$('#rangeFilter button').forEach(b=>b.classList.toggle('active',b===e.target));render()};
-$('#prevMonth').onclick=()=>{state.month=new Date(state.month.getFullYear(),state.month.getMonth()-1,1);renderCalendar()};$('#nextMonth').onclick=()=>{state.month=new Date(state.month.getFullYear(),state.month.getMonth()+1,1);renderCalendar()};$('#calendar').onclick=e=>{const day=e.target.closest('.day');if(day)openDay(day.dataset.date)};$('#dayEntries').onclick=e=>{const row=e.target.closest('.entry-row');if(!row)return;closeDialog($('#dayDialog'));openEntry(state.entries.find(x=>x.id===row.dataset.id))};
-$('#entryForm').onsubmit=async e=>{e.preventDefault();const old=state.entries.find(x=>x.id===$('#entryId').value);const entry={id:old?.id||uid(),person:$('#person').value,systolic:Number($('#systolic').value),diastolic:Number($('#diastolic').value),pulse:Number($('#pulse').value),measured_at:new Date($('#measuredAt').value).toISOString(),note:$('#note').value.trim(),created_at:old?.created_at||new Date().toISOString()};try{await persist(entry);closeDialog($('#entryDialog'));toast('记录已保存')}catch(err){toast(`保存失败：${err.message}`)}};
-$('#deleteEntry').onclick=async()=>{const entry=state.entries.find(x=>x.id===$('#entryId').value);if(entry&&confirm('确定删除这条记录吗？')){try{await persist(entry,true);closeDialog($('#entryDialog'));toast('记录已删除')}catch(err){toast(`删除失败：${err.message}`)}}};
-$('#authForm').onsubmit=async e=>{e.preventDefault();const email=$('#authEmail').value.trim(),password=$('#authPassword').value;$('#authMessage').textContent='正在登录…';try{await login(email,password)}catch(err){$('#authMessage').textContent=`登录失败：${err.message}`}};
-$('#registerButton').onclick=async()=>{const email=$('#authEmail').value.trim(),password=$('#authPassword').value;if(!email||password.length<6){$('#authMessage').textContent='请输入有效邮箱和至少 6 位密码';return}$('#authMessage').textContent='正在注册…';try{await register(email,password)}catch(err){$('#authMessage').textContent=`注册失败：${err.message}`}};
-$('#logoutButton').onclick=()=>logout();$('#authDialog').addEventListener('cancel',e=>e.preventDefault());
-load();
+    function el(id){return document.getElementById(id)}
+    function pad(n){return String(n).padStart(2,"0")}
+    function localDateTime(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())+"T"+pad(d.getHours())+":"+pad(d.getMinutes())}
+    function message(text,ok){el("loginMessage").textContent=text;el("loginMessage").className=ok?"message ok":"message"}
+    function setBusy(busy){el("loginBtn").disabled=busy;el("registerBtn").disabled=busy}
+    function saveSession(value){session=value;try{if(value)localStorage.setItem("shuwang_session",JSON.stringify(value));else localStorage.removeItem("shuwang_session")}catch(e){}}
+    function readSession(){try{return JSON.parse(localStorage.getItem("shuwang_session")||"null")}catch(e){return null}}
 
-</script>
+    async function auth(path,data,token){
+      var headers={"apikey":PUBLIC_KEY,"Content-Type":"application/json"};
+      if(token)headers.Authorization="Bearer "+token;
+      var options={method:"POST",headers:headers};
+      if(data)options.body=JSON.stringify(data);
+      var response=await fetch(SUPABASE_URL+"/auth/v1/"+path,options);
+      var result=await response.json().catch(function(){return {}});
+      if(!response.ok)throw new Error(result.msg||result.message||result.error_description||("HTTP "+response.status));
+      return result;
+    }
+
+    async function rest(path,options){
+      options=options||{};
+      options.headers=Object.assign({"apikey":PUBLIC_KEY,"Authorization":"Bearer "+session.access_token,"Content-Type":"application/json"},options.headers||{});
+      var response=await fetch(SUPABASE_URL+"/rest/v1/"+path,options);
+      var result=response.status===204?null:await response.json().catch(function(){return {}});
+      if(!response.ok)throw new Error(result.message||("HTTP "+response.status));
+      return result;
+    }
+
+    function showLogin(){
+      el("dashboard").classList.add("hidden");
+      el("loginPage").classList.remove("hidden");
+    }
+    function showDashboard(){
+      el("loginPage").classList.add("hidden");
+      el("dashboard").classList.remove("hidden");
+      el("currentUser").textContent=session.user.email;
+    }
+
+    async function enterDashboard(){
+      var rows=await rest("household_members?select=household_id,display_name&user_id=eq."+encodeURIComponent(session.user.id));
+      if(!rows||!rows.length)throw new Error("这个账户没有家庭数据访问权限");
+      member=rows[0];
+      showDashboard();
+      el("person").value=member.display_name==="Wenqi"?"Wenqi":"Yihao";
+      await loadRecords();
+    }
+
+    async function loadRecords(){
+      el("syncStatus").textContent="正在读取云端数据……";
+      var rows=await rest("blood_pressure_entries?select=*&order=measured_at.desc");
+      var body=el("recordsBody");
+      body.innerHTML="";
+      el("emptyState").classList.toggle("hidden",rows.length!==0);
+      rows.forEach(function(row){
+        var tr=document.createElement("tr");
+        var d=new Date(row.measured_at);
+        var values=[d.toLocaleString("zh-CN"),row.person,row.systolic+" mmHg",row.diastolic+" mmHg",row.pulse+" bpm",row.note||""];
+        values.forEach(function(value){var td=document.createElement("td");td.textContent=value;tr.appendChild(td)});
+        var action=document.createElement("td");
+        var button=document.createElement("button");
+        button.type="button";button.className="delete-btn";button.textContent="删除";
+        button.addEventListener("click",function(){deleteRecord(row.id)});
+        action.appendChild(button);tr.appendChild(action);body.appendChild(tr);
+      });
+      el("syncStatus").textContent="云端已同步 · 共 "+rows.length+" 条记录";
+    }
+
+    async function deleteRecord(id){
+      if(!confirm("确定删除这条记录吗？"))return;
+      try{await rest("blood_pressure_entries?id=eq."+encodeURIComponent(id),{method:"DELETE",headers:{"Prefer":"return=minimal"}});await loadRecords()}
+      catch(error){alert("删除失败："+error.message)}
+    }
+
+    el("loginForm").addEventListener("submit",async function(event){
+      event.preventDefault();setBusy(true);message("正在登录……",true);
+      try{
+        var email=el("email").value.trim().toLowerCase();
+        var password=el("password").value;
+        var data=await auth("token?grant_type=password",{email:email,password:password});
+        saveSession(data);await enterDashboard();message("",true);
+      }catch(error){saveSession(null);showLogin();message("登录失败："+error.message,false)}
+      setBusy(false);
+    });
+
+    el("registerBtn").addEventListener("click",async function(){
+      var email=el("email").value.trim().toLowerCase();
+      var password=el("password").value;
+      if(ALLOWED.indexOf(email)===-1){message("这个邮箱不在家庭白名单中。",false);return}
+      if(password.length<6){message("密码至少需要 6 位。",false);return}
+      setBusy(true);message("正在注册……",true);
+      try{
+        var data=await auth("signup",{email:email,password:password});
+        if(data.access_token){saveSession(data);await enterDashboard()}
+        else message("注册成功。请先在邮箱中完成确认，然后回来登录。",true);
+      }catch(error){message("注册失败："+error.message,false)}
+      setBusy(false);
+    });
+
+    el("recordForm").addEventListener("submit",async function(event){
+      event.preventDefault();el("saveBtn").disabled=true;el("syncStatus").textContent="正在保存……";
+      try{
+        var payload={
+          household_id:member.household_id,
+          recorded_by:session.user.id,
+          person:el("person").value,
+          systolic:Number(el("systolic").value),
+          diastolic:Number(el("diastolic").value),
+          pulse:Number(el("pulse").value),
+          measured_at:new Date(el("measuredAt").value).toISOString(),
+          note:el("note").value.trim()
+        };
+        await rest("blood_pressure_entries",{method:"POST",headers:{"Prefer":"return=minimal"},body:JSON.stringify(payload)});
+        el("systolic").value="";el("diastolic").value="";el("pulse").value="";el("note").value="";
+        el("measuredAt").value=localDateTime(new Date());
+        await loadRecords();
+      }catch(error){el("syncStatus").textContent="保存失败："+error.message}
+      el("saveBtn").disabled=false;
+    });
+
+    el("logoutBtn").addEventListener("click",async function(){
+      try{if(session)await auth("logout",null,session.access_token)}catch(e){}
+      saveSession(null);session=null;member=null;showLogin();message("已退出登录。",true);
+    });
+
+    async function start(){
+      el("measuredAt").value=localDateTime(new Date());
+      session=readSession();
+      if(!session){showLogin();return}
+      try{await enterDashboard()}catch(error){saveSession(null);session=null;showLogin();message("请重新登录："+error.message,false)}
+    }
+    start();
+  })();
+  </script>
 </body>
 </html>
