@@ -41,6 +41,29 @@
     @keyframes selection-in{from{transform:scale(.96)}to{transform:scale(1)}}
     @media(hover:hover){.btn:hover:not(:disabled),.edit-btn:hover,.month-btn:hover,.modal-close:hover{filter:brightness(.97);box-shadow:0 4px 12px #17202a12}}
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+    .mobile-nav{display:none}.account-email{overflow-wrap:anywhere;font-size:15px;color:#68737f;margin:16px 0 24px}
+    @media(max-width:700px){
+      .header-right>.btn{display:none}.app-header{min-height:64px;padding:10px 16px}
+      main{padding-bottom:calc(110px + env(safe-area-inset-bottom,0px));min-width:0}
+      .mobile-nav{display:grid;grid-template-columns:1fr 1fr 1.2fr 2fr;position:fixed;inset:auto 0 0;z-index:15;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.94);border-top:1px solid #e3e7eb;box-shadow:0 -5px 24px #17202a09;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+      .mobile-nav button{border:0;background:transparent;color:#87919e;min-height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;border-radius:14px;cursor:pointer}
+      .mobile-nav button.active{color:#2877cf;background:#edf5ff}.mobile-nav svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+      .mobile-nav .nav-add{position:absolute;left:50%;top:4px;transform:translateX(-50%);width:60px;height:60px;color:white;background:#17202a;border:5px solid #fff;border-radius:50%;box-shadow:0 5px 15px #17202a25}
+      .mobile-nav .nav-add:active{transform:translateX(-50%) scale(.94)}.nav-spacer{min-height:54px}
+      #historyMain .history-head{gap:10px}#historyMain #backDashboard{display:none}
+      #historyMain .history-filters{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+      #historyMain .history-filters>div{min-width:0}#historyMain input,#historyMain select{width:100%;min-width:0;max-width:100%;font-size:14px;padding:10px 6px}#historyMain #applyHistory{grid-column:1/-1}
+      #historyMain .table-wrap{overflow:visible}#historyMain table{display:block;min-width:0;width:100%}#historyMain thead{display:none}#recordsBody{display:grid;gap:12px;width:100%}
+      #recordsBody tr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) 38px;gap:10px 8px;border:1px solid #e3e7eb;border-left:3px solid #3276d2;border-radius:13px;padding:12px;background:#fff;min-width:0}#recordsBody tr.wenqi{border-left-color:#d85f8d}
+      #recordsBody td{border:0;padding:0;min-width:0;overflow-wrap:anywhere;font-size:14px}
+      #recordsBody td:nth-child(1){grid-column:1/3;grid-row:1;font-size:12px;color:#75808d;align-self:center}
+      #recordsBody td:nth-child(2){grid-column:3;grid-row:1;font-weight:700;color:#3276d2;align-self:center}#recordsBody tr.wenqi td:nth-child(2){color:#d85f8d}
+      #recordsBody td:nth-child(3){grid-column:1;grid-row:2}#recordsBody td:nth-child(4){grid-column:2;grid-row:2}#recordsBody td:nth-child(5){grid-column:3;grid-row:2}
+      #recordsBody td:nth-child(3)::before,#recordsBody td:nth-child(4)::before,#recordsBody td:nth-child(5)::before{content:attr(data-label);display:block;font-size:12px;font-weight:400;color:#89929c;margin-bottom:4px}
+      #recordsBody td:nth-child(6){grid-column:1/-1;grid-row:3;font-size:12px;color:#75808d}#recordsBody td:nth-child(6):empty{display:none}
+      #recordsBody td:nth-child(7){grid-column:4;grid-row:1/3;align-self:center}#recordsBody .edit-btn{width:38px;height:44px}
+      #accountMain:not(.hidden){animation:surface-in .32s var(--ease-ios)}
+    }
   </style>
 </head>
 <body>
@@ -108,6 +131,14 @@
         <div id="emptyState" class="empty hidden" data-i18n="noRecords">当前条件下没有记录。</div>
       </section>
     </main>
+    <main id="accountMain" class="hidden"><section class="panel"><h2 data-i18n="navMine">我的</h2><p id="accountEmail" class="account-email"></p><button id="accountSettings" class="btn secondary full" data-i18n="profile">个人设置</button><button id="accountLogout" class="btn secondary full" data-i18n="logout">退出</button></section></main>
+    <nav class="mobile-nav" aria-label="Navigation">
+      <button type="button" id="navHome" class="active" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10 12 3l9 7v11h-6v-7H9v7H3z"/></svg><span data-i18n="navHome">首页</span></button>
+      <button type="button" id="navHistory"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span data-i18n="history">历史</span></button>
+      <span class="nav-spacer" aria-hidden="true"></span>
+      <button type="button" id="navMine"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg><span data-i18n="navMine">我的</span></button>
+      <button type="button" id="navAdd" class="nav-add" aria-label="新增数据"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M4 12h16"/></svg></button>
+    </nav>
   </section>
 
   <div id="recordModal" class="modal hidden">
@@ -165,6 +196,8 @@
       en:{appTitle:"Family Blood Pressure",dashboardTitle:"Blood Pressure Dashboard",loginSub:"Register or sign in with an approved email address. The Dashboard is available after sign-in.",email:"Email",password:"Password",login:"Sign in",register:"First time: Register",allowed:"Only the two approved family email addresses can access this dashboard",addRecord:"＋ Add reading",history:"History",profile:"Profile settings",logout:"Sign out",both:"Both",days7:"7 days",month1:"1 month",custom:"Custom",to:"to",apply:"Apply",trend:"Blood pressure trend",yihaoBlue:"Yihao blue",wenqiPink:"Wenqi pink",chartHint:"One daily average per person · Click a point for details",mon:"Mon",tue:"Tue",wed:"Wed",thu:"Thu",fri:"Fri",sat:"Sat",sun:"Sun",backDashboard:"Back to Dashboard",person:"Person",startTime:"Start time",endTime:"End time",sort:"Sort",newest:"Time: newest first",oldest:"Time: oldest first",sysPeak:"Highest systolic",diaPeak:"Highest diastolic",pulsePeak:"Highest pulse",filter:"Filter",time:"Time",systolic:"Systolic",diastolic:"Diastolic",pulse:"Pulse",note:"Note",noRecords:"No readings match these filters.",newRecordTitle:"Add blood pressure reading",editRecordTitle:"Edit blood pressure reading",pulseOptional:"Pulse (optional)",measuredAt:"Measurement time",notePlaceholder:"e.g. after medication or exercise",delete:"Delete",cancel:"Cancel",saveRecord:"Save reading",profileTitle:"Profile and target ranges",profileNote:"Height and weight are used only to calculate BMI, not to estimate blood pressure. If your doctor has set personal targets, enter them here.",saveSettings:"Save settings",avgSys:"Average systolic",avgDia:"Average diastolic",avgPulse:"Average pulse",count:"Measurements",times:"readings",loading:"Loading cloud data …",synced:"Cloud synced · {count} readings",accessDenied:"This account does not have access to the family data",edit:"Edit",dailyAverage:"Daily average",measurements:"{count} readings",notRecorded:"not recorded",targetZone:"target range",yearMonth:"{month}/{year}",height:"Height cm",weight:"Weight kg",bmiMissing:"BMI: not entered",sysMin:"Systolic min",sysMax:"Systolic max",diaMin:"Diastolic min",diaMax:"Diastolic max",lowerLess:"{person}'s lower limit must be below the upper limit",chooseDates:"Please select a start and end date",startAfterEnd:"The start date cannot be after the end date",deleteConfirm:"Delete this blood pressure reading? This cannot be undone.",deleteFail:"Delete failed: ",profileSaved:"Profile settings saved",saveFail:"Save failed: ",loggingIn:"Signing in …",loginFail:"Sign-in failed: ",notAllowed:"This email address is not approved.",passwordShort:"The password must contain at least 6 characters.",registering:"Registering …",registerSuccess:"Registration successful. Confirm your email, then return to sign in.",registerFail:"Registration failed: ",saving:"Saving …",loggedOut:"Signed out.",relogin:"Please sign in again: "}
     };
 
+    I18N.zh.navHome="首页";I18N.de.navHome="Start";I18N.en.navHome="Home";
+    I18N.zh.navMine="我的";I18N.de.navMine="Konto";I18N.en.navMine="Account";
     function el(id){return document.getElementById(id)}
     function t(key,vars){var text=(I18N[language]&&I18N[language][key])||I18N.zh[key]||key;Object.keys(vars||{}).forEach(function(k){text=text.replace("{"+k+"}",vars[k])});return text}
     function currentLocale(){return language==="de"?"de-DE":language==="en"?"en-GB":"zh-CN"}
@@ -172,6 +205,7 @@
     function applyLanguage(){
       document.documentElement.lang=language==="zh"?"zh-CN":language;
       document.title=t("appTitle");
+      el("navAdd").setAttribute("aria-label",t("addRecord"));
       var headerTitle=document.querySelector(".header-brand h1");if(headerTitle)headerTitle.textContent=t("dashboardTitle");
       document.querySelectorAll("[data-i18n]").forEach(function(node){node.textContent=t(node.getAttribute("data-i18n"))});
       document.querySelectorAll("[data-i18n-placeholder]").forEach(function(node){node.placeholder=t(node.getAttribute("data-i18n-placeholder"))});
@@ -211,6 +245,8 @@
       el("loginPage").classList.remove("hidden");
     }
     function showDashboard(){
+      el("accountMain").classList.add("hidden");
+      setNavigation("home");
       el("loginPage").classList.add("hidden");
       el("dashboard").classList.remove("hidden");
       el("historyMain").classList.add("hidden");
@@ -266,10 +302,10 @@
       body.innerHTML="";
       el("emptyState").classList.toggle("hidden",rows.length!==0);
       rows.forEach(function(row){
-        var tr=document.createElement("tr");
+        var tr=document.createElement("tr");tr.className=row.person==="Wenqi"?"wenqi":"yihao";
         var d=new Date(row.measured_at);
         var values=[d.toLocaleString(currentLocale()),row.person,row.systolic+" mmHg",row.diastolic+" mmHg",row.pulse===null?"—":row.pulse+" bpm",row.note||""];
-        values.forEach(function(value){var td=document.createElement("td");td.textContent=value;tr.appendChild(td)});
+        values.forEach(function(value,index){var td=document.createElement("td");td.textContent=value;td.setAttribute("data-label",t(["time","person","systolic","diastolic","pulse","note"][index]));tr.appendChild(td)});
         var action=document.createElement("td");
         var button=document.createElement("button");
         button.type="button";button.className="edit-btn";button.textContent="✎";button.title=t("edit");
@@ -356,8 +392,16 @@
     }
 
     el("addRecordBtn").addEventListener("click",openRecordModal);
-    el("historyBtn").addEventListener("click",function(){el("dashboardMain").classList.add("hidden");el("historyMain").classList.remove("hidden");renderHistory()});
-    el("backDashboard").addEventListener("click",function(){el("historyMain").classList.add("hidden");el("dashboardMain").classList.remove("hidden")});
+    function setNavigation(page){["Home","History","Mine"].forEach(function(name){var active=name.toLowerCase()===(page==="account"?"mine":page);el("nav"+name).classList.toggle("active",active);if(active)el("nav"+name).setAttribute("aria-current","page");else el("nav"+name).removeAttribute("aria-current")})}
+    function navigate(page){el("dashboardMain").classList.toggle("hidden",page!=="home");el("historyMain").classList.toggle("hidden",page!=="history");el("accountMain").classList.toggle("hidden",page!=="account");setNavigation(page);if(page==="history")renderHistory();if(page==="account")el("accountEmail").textContent=session&&session.user?session.user.email:"";window.scrollTo({top:0,behavior:"instant"})}
+    el("historyBtn").addEventListener("click",function(){navigate("history")});
+    el("backDashboard").addEventListener("click",function(){navigate("home")});
+    el("navHome").addEventListener("click",function(){navigate("home")});
+    el("navHistory").addEventListener("click",function(){navigate("history")});
+    el("navMine").addEventListener("click",function(){navigate("account")});
+    el("navAdd").addEventListener("click",openRecordModal);
+    el("accountSettings").addEventListener("click",function(){el("profileBtn").click()});
+    el("accountLogout").addEventListener("click",function(){el("logoutBtn").click()});
     el("applyHistory").addEventListener("click",renderHistory);
     el("profileBtn").addEventListener("click",function(){profilePerson=currentPerson==="Yihao"||currentPerson==="Wenqi"?currentPerson:(member.display_name==="Wenqi"?"Wenqi":"Yihao");renderProfileForm();el("profileModal").classList.remove("hidden")});
     el("profileTabs").addEventListener("click",function(e){var button=e.target.closest("button");if(!button)return;profilePerson=button.getAttribute("data-profile-person");renderProfileForm()});
