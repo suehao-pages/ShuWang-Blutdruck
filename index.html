@@ -99,6 +99,12 @@
     #loginMessage:empty{display:none}
     @media(max-width:480px){.login-card{padding:74px 24px 24px;border-radius:28px}.login-card>.bpcare-wordmark{font-size:36px;margin-bottom:30px}}
     @media(max-height:620px){.login-page{align-items:flex-start}.login-card{padding-top:64px}.login-card>.brand-icon{width:64px;height:64px}.login-card>.bpcare-wordmark{margin-bottom:22px}}
+    #metricCards .metric-card{background:white;color:var(--ink);border-color:var(--border);box-shadow:none;text-align:left;font:inherit;cursor:pointer;transition:background .22s,color .22s,transform .18s;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:pan-y}
+    #metricCards .metric-card .metric-label,#metricCards .metric-card .metric-unit{color:var(--muted)}#metricCards .metric-card .metric-icon{color:var(--blue)}
+    #metricCards .metric-card.active{background:var(--blue);color:white;border-color:var(--blue);box-shadow:0 10px 26px #2B73E124}#metricCards .metric-card.active .metric-label,#metricCards .metric-card.active .metric-unit,#metricCards .metric-card.active .metric-icon{color:white}#metricCards .metric-card:active{transform:scale(.97)}
+    #trendChart{height:460px}.chart-series{transition:opacity .2s}.chart-person{transition:opacity .2s}.calendar-week{display:contents}
+    .extreme-group{padding:16px;background:#F8FAFC;border-radius:18px;margin-top:12px}.extreme-group h3{margin:0 0 10px}.extreme-row{padding:9px 0;border-top:1px solid var(--border);font-size:14px}.extreme-row b{font-size:20px}.extreme-row small{display:block;color:var(--muted);margin-top:4px}
+    @media(max-width:700px){#trendChart{height:430px}#calendarGrid{display:flex;flex-direction:column;gap:10px}.calendar-week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border:1px solid var(--border);border-radius:16px;overflow:hidden;background:#fff}.calendar-week .cal-day{border:0;border-radius:0;min-width:0;min-height:96px;padding:8px 2px;background:transparent}.calendar-week .cal-day+.cal-day{border-left:1px solid #EEF2F7}.calendar-week .day-pill{padding:3px 0;font-size:9px;overflow-wrap:anywhere}.calendar-week .day-pill strong{display:block;font-size:10px}.calendar-week .day-num{text-align:center}}
   </style>
 </head>
 <body>
@@ -341,7 +347,17 @@
     function renderDashboard(){var rows=filteredRecords();renderMetrics(rows);renderChart(rows);renderCalendar()}
     function renderMetrics(rows){
       var cards=[[t("avgSys"),average(rows,"systolic"),"mmHg"],[t("avgDia"),average(rows,"diastolic"),"mmHg"],[t("avgPulse"),average(rows,"pulse"),"bpm"],[t("count"),rows.length,t("times")]];
-      el("metricCards").innerHTML=cards.map(function(card,i){return '<div class="metric-card"><div class="metric-icon">'+icon(['up','down','pulse','count'][i])+'</div><div class="metric-label">'+card[0]+'</div><div class="metric-value">'+(card[1]===null?"—":card[1])+'</div><div class="metric-unit">'+card[2]+'</div></div>'}).join("");
+      el("metricCards").innerHTML=cards.map(function(card,i){return '<button type="button" data-metric="'+i+'" aria-pressed="'+(i===activeMetric)+'" class="metric-card '+(i===activeMetric?'active':'')+'"><div class="metric-icon">'+icon(['up','down','pulse','count'][i])+'</div><div class="metric-label">'+card[0]+'</div><div class="metric-value">'+(card[1]===null?"—":card[1])+'</div><div class="metric-unit">'+card[2]+'</div></button>'}).join("");
+    }
+
+    var activeMetric=0;
+    function openExtremes(index){
+      if(index===3)return;
+      var key=['systolic','diastolic','pulse'][index],words={zh:['最高值','最低值','关闭'],de:['Höchstwert','Tiefstwert','Schließen'],en:['Maximum','Minimum','Close']}[language],rows=filteredRecords().filter(function(r){return r[key]!==null&&r[key]!==undefined&&r[key]!==''&&Number.isFinite(Number(r[key]))});
+      var box=document.getElementById('metricModal');if(!box){box=document.createElement('div');box.id='metricModal';box.className='modal';box.setAttribute('role','dialog');box.setAttribute('aria-modal','true');document.body.appendChild(box)}
+      var people=currentPerson==='all'?['Yihao','Wenqi']:[currentPerson];
+      box.innerHTML='<div class="modal-card"><div class="modal-head"><h2>'+esc(t(key))+'</h2><button class="btn secondary" id="closeMetric">'+words[2]+'</button></div>'+people.map(function(person){var rr=rows.filter(function(r){return r.person===person});return '<section class="extreme-group"><h3>'+person+'</h3>'+(!rr.length?esc(t('noRecords')):[Math.max.apply(null,rr.map(function(r){return Number(r[key])})),Math.min.apply(null,rr.map(function(r){return Number(r[key])}))].map(function(value,i){return '<div class="extreme-row">'+words[i]+' · <b>'+value+'</b> '+(key==='pulse'?'bpm':'mmHg')+rr.filter(function(r){return Number(r[key])===value}).map(function(r){return '<small>'+esc(new Date(r.measured_at).toLocaleString(currentLocale()))+'</small>'}).join('')+'</div>'}).join(''))+'</section>'}).join('')+'</div>';
+      box.classList.remove('hidden');function close(){box.classList.add('hidden');var card=el('metricCards').querySelector('[data-metric="'+index+'"]');if(card)card.focus()}el('closeMetric').onclick=close;box.onclick=function(e){if(e.target===box)close()};box.onkeydown=function(e){if(e.key==='Escape')close();if(e.key==='Tab'){e.preventDefault();el('closeMetric').focus()}};el('closeMetric').focus();
     }
 
     function renderTable(rows){
@@ -364,20 +380,29 @@
     function renderChart(rows){
       var chart=el("trendChart");
       var dates=chartDates(),sorted=dailyAverages(rows).filter(function(row){return dates.indexOf(row.date)!==-1});
-      var W=Math.max(260,chart.clientWidth||920),H=chart.clientHeight||260,L=34,R=18,T=24,B=30,min=40,max=190;
-      sorted.forEach(function(row){max=Math.max(max,Math.ceil((row.systolic+15)/10)*10);min=Math.min(min,Math.floor((row.diastolic-10)/10)*10)});
+      if(selectedChartPoint&&!sorted.some(function(r){return r.key===selectedChartPoint}))selectedChartPoint='';
+      var focus=selectedChartPoint.split('|')[0],W=Math.max(260,chart.clientWidth||920),H=chart.clientHeight||460,L=38,R=20,gap=48,top=30,bottom=30,ph=(H-top-bottom-gap)/2;
       var x=function(day){return dates.length===1?(L+W-R)/2:L+dates.indexOf(day)*(W-L-R)/Math.max(dates.length-1,1)};
-      var y=function(v){return T+(max-v)*(H-T-B)/(max-min)};
-      var grid=[60,90,120,150,180].map(function(v){return '<line class="grid-line" x1="'+L+'" y1="'+y(v)+'" x2="'+(W-R)+'" y2="'+y(v)+'"></line><text class="axis-text" x="2" y="'+(y(v)+3)+'">'+v+'</text>'}).join("");
-      var labelStep=Math.max(1,Math.ceil(dates.length/Math.max(4,Math.floor(W/42))));
-      var labels=dates.map(function(day,i){if(i%labelStep!==0&&i!==dates.length-1)return "";var d=new Date(day+"T12:00:00");return '<text class="axis-text" text-anchor="middle" x="'+x(day)+'" y="'+(H-5)+'">'+esc(d.toLocaleDateString(currentLocale(),{month:'numeric',day:'numeric'}))+'</text>'}).join("");
-      var series=[];
-      ["Yihao","Wenqi"].forEach(function(person){var byDay={};sorted.forEach(function(row){if(row.person===person)byDay[row.date]=row});["systolic","diastolic"].forEach(function(key){var path="",connected=false;dates.forEach(function(day){var row=byDay[day];if(!row){connected=false;return}path+=(connected?"L":"M")+x(day).toFixed(1)+","+y(row[key]).toFixed(1)+" ";connected=true});if(path)series.push('<path class="line '+person.toLowerCase()+' '+(key==="systolic"?"sys":"dia")+'" d="'+path+'"></path>')})});
-      var bandPeople=currentPerson==="all"?["Yihao","Wenqi"]:[currentPerson],bands="";
-      bandPeople.forEach(function(person,idx){var p=profiles.find(function(v){return v.person===person});if(!p)return;var color=person==="Yihao"?"#3276d2":"#d85f8d";var sysTop=y(p.systolic_max),sysHeight=y(p.systolic_min)-sysTop;var diaTop=y(p.diastolic_max),diaHeight=y(p.diastolic_min)-diaTop;bands+='<rect class="reference-band" x="'+L+'" y="'+sysTop+'" width="'+(W-L-R)+'" height="'+sysHeight+'" fill="'+color+'"></rect><rect class="reference-band" x="'+L+'" y="'+diaTop+'" width="'+(W-L-R)+'" height="'+diaHeight+'" fill="'+color+'"></rect><text class="reference-label" x="'+(L+5)+'" y="'+(sysTop+10+idx*10)+'">'+person+' '+esc(t("targetZone"))+'</text>'});
-      var dots=sorted.map(function(row){var color=row.person==="Yihao"?'#2B73E1':'#C96891',selected=row.key===selectedChartPoint?' selected':'',title=row.person+' · '+t('dailyAverage')+' '+row.systolic+'/'+row.diastolic+' · '+t('measurements',{count:row.rows.length}),cx=x(row.date);return ['systolic','diastolic'].map(function(key){return '<g role="button" tabindex="0" aria-label="'+esc(title)+'" aria-pressed="'+(row.key===selectedChartPoint)+'" data-chart-key="'+row.key+'"><title>'+esc(title)+'</title><circle class="chart-hit" cx="'+cx+'" cy="'+y(row[key])+'" r="22"/><circle class="chart-dot'+selected+'" cx="'+cx+'" cy="'+y(row[key])+'" r="'+(key==='systolic'?5:4)+'" fill="'+color+'"/></g>'}).join('')}).join('');
-      var empty=sorted.length?'':'<text x="'+((L+W-R)/2)+'" y="'+(H/2)+'" text-anchor="middle" fill="#68737f" font-size="13">'+esc(t("noRecords"))+'</text>';
-      chart.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet">'+grid+bands+labels+series.join("")+dots+empty+'</svg>';
+      var out='',people=currentPerson==='all'?['Yihao','Wenqi']:[currentPerson];
+      ['systolic','diastolic'].forEach(function(key,panel){
+        var lo=key==='systolic'?80:40,hi=key==='systolic'?180:110,pt=top+panel*(ph+gap);
+        sorted.forEach(function(r){lo=Math.min(lo,Math.floor((r[key]-8)/10)*10);hi=Math.max(hi,Math.ceil((r[key]+8)/10)*10)});
+        people.forEach(function(person){var p=profiles.find(function(p){return p.person===person});if(p){lo=Math.min(lo,Math.floor(Number(p[key+'_min'])/10)*10);hi=Math.max(hi,Math.ceil(Number(p[key+'_max'])/10)*10)}});
+        var y=function(v){return pt+(hi-v)*ph/(hi-lo)};
+        out+='<text x="'+L+'" y="'+(pt-12)+'" fill="#1E293B" font-size="14" font-weight="600">'+esc(t(key))+' · mmHg</text>';
+        for(var tick=0;tick<=4;tick++){var value=Math.round(lo+(hi-lo)*tick/4);out+='<line class="grid-line" x1="'+L+'" y1="'+y(value)+'" x2="'+(W-R)+'" y2="'+y(value)+'"/><text class="axis-text" x="2" y="'+(y(value)+4)+'">'+value+'</text>'}
+        people.forEach(function(person){var p=profiles.find(function(p){return p.person===person}),color=person==='Yihao'?'#2B73E1':'#C96891',dim=focus&&focus!==person?'.25':'1',byDay={};
+          out+='<g class="chart-series" data-series-person="'+person+'" opacity="'+dim+'">';
+          if(p)out+='<rect class="reference-band" x="'+L+'" y="'+y(p[key+'_max'])+'" width="'+(W-L-R)+'" height="'+(y(p[key+'_min'])-y(p[key+'_max']))+'" fill="'+color+'"><title>'+person+' '+esc(t('targetZone'))+' '+p[key+'_min']+'–'+p[key+'_max']+'</title></rect>';
+          sorted.forEach(function(r){if(r.person===person)byDay[r.date]=r});var path='',connected=false;
+          dates.forEach(function(day){var r=byDay[day];if(!r){connected=false;return}path+=(connected?'L':'M')+x(day).toFixed(1)+','+y(r[key]).toFixed(1)+' ';connected=true});
+          if(path)out+='<path class="line" stroke="'+color+'" d="'+path+'"/>';
+          dates.forEach(function(day){var r=byDay[day];if(!r)return;var title=person+' '+day+' '+t(key)+' '+r[key];out+='<g role="button" tabindex="0" aria-label="'+esc(title)+'" aria-pressed="'+(r.key===selectedChartPoint)+'" data-chart-key="'+r.key+'"><title>'+esc(title)+'</title><circle class="chart-hit" cx="'+x(day)+'" cy="'+y(r[key])+'" r="22"/><circle class="chart-dot '+(r.key===selectedChartPoint?'selected':'')+'" cx="'+x(day)+'" cy="'+y(r[key])+'" r="5" fill="'+color+'"/></g>'});out+='</g>';
+        });
+      });
+      var step=Math.max(1,Math.ceil(dates.length/Math.max(4,Math.floor(W/48))));
+      dates.forEach(function(day,i){if(i%step&&i!==dates.length-1)return;out+='<text class="axis-text" text-anchor="middle" x="'+x(day)+'" y="'+(H-6)+'">'+esc(new Date(day+'T12:00:00').toLocaleDateString(currentLocale(),{month:'numeric',day:'numeric'}))+'</text>'});
+      chart.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet">'+out+'</svg>';
       renderChartControls(sorted,dates);
       renderChartDetail(sorted);
     }
@@ -387,7 +412,7 @@
       el('chartDate').min=dates[0]||'';el('chartDate').max=dates[dates.length-1]||'';el('chartDate').value=chartFocusDate;
       el('chartPrev').disabled=chartFocusDate<=dates[0];el('chartNext').disabled=chartFocusDate>=dates[dates.length-1];
       var people=currentPerson==='all'?['Yihao','Wenqi']:[currentPerson];
-      el('chartPeople').innerHTML=people.map(function(person){var key=person+'|'+chartFocusDate,g=groups.find(function(g){return g.key===key});return '<button type="button" class="chart-person '+person.toLowerCase()+'" data-chart-key="'+key+'" aria-pressed="'+(selectedChartPoint===key)+'" '+(g?'':'disabled')+'><span>'+person+'</span><b>'+(g?g.systolic+'/'+g.diastolic:'—')+'</b><small>'+esc(g?t('measurements',{count:g.rows.length}):t('noDay'))+'</small></button>'}).join('');
+      el('chartPeople').innerHTML=people.map(function(person){var key=person+'|'+chartFocusDate,g=groups.find(function(g){return g.key===key});return '<button type="button" class="chart-person '+person.toLowerCase()+'" style="opacity:'+(selectedChartPoint&&selectedChartPoint.split('|')[0]!==person?'.35':'1')+'" data-chart-key="'+key+'" aria-pressed="'+(selectedChartPoint===key)+'" '+(g?'':'disabled')+'><span>'+person+'</span><b>'+(g?g.systolic+'/'+g.diastolic:'—')+'</b><small>'+esc(g?t('measurements',{count:g.rows.length}):t('noDay'))+'</small></button>'}).join('');
     }
     function selectChartPoint(key){chartFocusDate=key.split('|')[1];selectedChartPoint=selectedChartPoint===key?'':key;renderChart(filteredRecords())}
 
@@ -405,11 +430,13 @@
       el("monthTitle").textContent=t("yearMonth",{year:y0,month:m0+1});
       var first=(new Date(y0,m0,1).getDay()+6)%7,days=new Date(y0,m0+1,0).getDate(),prev=new Date(y0,m0,0).getDate(),html="";
       for(var i=0;i<42;i++){
+        if(i%7===0)html+='<div class="calendar-week">';
         var d,inside=true;if(i<first){d=new Date(y0,m0-1,prev-first+i+1);inside=false}else if(i>=first+days){d=new Date(y0,m0+1,i-first-days+1);inside=false}else d=new Date(y0,m0,i-first+1);
         var key=d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
         var dayRows=records.filter(function(row){var rd=new Date(row.measured_at);var same=rd.getFullYear()===d.getFullYear()&&rd.getMonth()===d.getMonth()&&rd.getDate()===d.getDate();return same&&(currentPerson==="all"||row.person===currentPerson)});
         var pills=["Yihao","Wenqi"].map(function(person){var pr=dayRows.filter(function(r){return r.person===person});return pr.length?'<div class="day-pill '+person.toLowerCase()+'"><strong>'+average(pr,"systolic")+'/'+average(pr,"diastolic")+'</strong> · '+pr.length+(language==="zh"?"":" ")+esc(t("times"))+'</div>':""}).join("");
         html+='<div class="cal-day '+(inside?"":"outside")+'" data-date="'+key+'"><div class="day-num">'+d.getDate()+'</div>'+pills+'</div>';
+        if(i%7===6)html+='</div>';
       }
       el("calendarGrid").innerHTML=html;
     }
@@ -450,6 +477,15 @@
       profiles=await rest("health_profiles?select=*&order=person.asc");renderDashboard();
     }
 
+    var holdTimer=null,holdOrigin=null,holdFired=false;
+    function cancelHold(){clearTimeout(holdTimer);holdTimer=null}
+    function activateMetric(index){activeMetric=index;el('metricCards').querySelectorAll('[data-metric]').forEach(function(card){var active=Number(card.getAttribute('data-metric'))===index;card.classList.toggle('active',active);card.setAttribute('aria-pressed',String(active))})}
+    el('metricCards').addEventListener('click',function(e){var card=e.target.closest('[data-metric]');if(!card)return;if(holdFired){e.preventDefault();holdFired=false;return}activateMetric(Number(card.getAttribute('data-metric')))});
+    el('metricCards').addEventListener('pointerdown',function(e){cancelHold();holdFired=false;var card=e.target.closest('[data-metric]');if(!card||e.button>0)return;var index=Number(card.getAttribute('data-metric'));if(index===3)return;holdOrigin={x:e.clientX,y:e.clientY};holdTimer=setTimeout(function(){holdFired=true;activateMetric(index);openExtremes(index)},500)});
+    el('metricCards').addEventListener('pointermove',function(e){if(holdOrigin&&Math.hypot(e.clientX-holdOrigin.x,e.clientY-holdOrigin.y)>10)cancelHold()});
+    ['pointerup','pointercancel','pointerleave'].forEach(function(event){el('metricCards').addEventListener(event,cancelHold)});
+    el('metricCards').addEventListener('contextmenu',function(e){if(e.target.closest('[data-metric]'))e.preventDefault()});
+    el('metricCards').addEventListener('keydown',function(e){if(e.key==='Enter'&&e.shiftKey){var card=e.target.closest('[data-metric]');if(card){e.preventDefault();openExtremes(Number(card.getAttribute('data-metric')))}}});
     el("addRecordBtn").addEventListener("click",openRecordModal);
     function setNavigation(page){["Home","Calendar","History","Mine"].forEach(function(name){var active=name.toLowerCase()===(page==="account"?"mine":page);el("nav"+name).classList.toggle("active",active);if(active)el("nav"+name).setAttribute("aria-current","page");else el("nav"+name).removeAttribute("aria-current")})}
     function navigate(page){el("dashboardMain").classList.toggle("hidden",page!=="home");el("calendarMain").classList.toggle("hidden",page!=="calendar");el("historyMain").classList.toggle("hidden",page!=="history");el("accountMain").classList.toggle("hidden",page!=="account");setNavigation(page);if(page==="home")renderDashboard();if(page==="calendar"){el("calendarPerson").value=currentPerson;renderCalendar()}if(page==="history")renderHistory();if(page==="account")el("accountEmail").textContent=session&&session.user?session.user.email:"";window.scrollTo({top:0,behavior:"instant"})}
